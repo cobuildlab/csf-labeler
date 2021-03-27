@@ -4,6 +4,8 @@ from laberel import send_to_printer
 from label import generate_label
 from fairbanks_scale import init, current
 from threading import Thread
+from fairbanks_scale import current
+from math import ceil
 
 class ButtonsReader(Thread):
     def __init__(self):
@@ -11,7 +13,7 @@ class ButtonsReader(Thread):
         print("We started to read buttons values")
         #creates object 'gamepad' to store the data
         #you can call it whatever you like
-        self.buttons_pad = InputDevice('/dev/input/event2')
+        self.buttons_pad = InputDevice('/dev/input/by-id/usb-DragonRise_Inc._Generic_USB_Joystick-event-joystick')
         self.img_folder = '/home/pi/csf-labeler/images/'
         #print label
         self.blue_btn = 291
@@ -37,6 +39,13 @@ class ButtonsReader(Thread):
         
     def set_pause(self):
         self.pause = not self.pause
+
+    def send_print_helper(self, rounded_weight):
+        self.count = self.count + 1                        
+        label = generate_label(self.day_lot, self.count, str(rounded_weight))
+        route = self.img_folder + label
+        self.update_last_label(label)
+        send_to_printer(route)
         
     def run(self):
         #evdev takes care of polling the controller in a loop
@@ -48,12 +57,14 @@ class ButtonsReader(Thread):
                     #print(event)
                     if event.code == self.blue_btn and not self.pause:
                         print("Blue Btn pressed")
-                        self.count = self.count + 1
-                        label = generate_label(self.day_lot, self.count, current())
-                        route = self.img_folder + label
-                        self.update_last_label(label)
-                        send_to_printer(route)
-                        #print(event)
+                        weight = current()
+                        if weight != None and float(weight) > 0:
+                            if float(weight) <= 0.5:
+                                self.send_print_helper(str(0.5))
+                            else:
+                                self.send_print_helper(ceil(float(weight)))
+                                
+                            #print(event)
                     if event.code == self.yellow_btn and not self.pause:
                         print("Yellow Btn pressed")
                         self.start_new_lot()

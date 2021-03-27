@@ -42,15 +42,26 @@ class FairbanksScaleReader(Thread):
         previous = [0]
         # Used as threshold to wait for scale to balance before outputting to the user (100 executions by default)
         counts = {}
+
         while True:
             try:
+                global current_value
                 data = device.read(endpoint.bEndpointAddress, endpoint.wMaxPacketSize)
-                weight = float(data[4]) / 100
+                # print(data)
+                # print("DEBUG",data[0],data[1],data[2],data[3],data[4], data[5], data[4] + (data[5]*256))
+                if data[1] == 5:
+                    previous = []
+                    counts = {}
+                    current_value = None
+                    continue
+                
+                weight = float(data[4] + (data[5]*256)) / 100
                 weight_str = str(weight)
 
                 if weight == 0.0:  # The scale goes back to zero, so we rest everything
                     previous = []
                     counts = {}
+                    current_value = None
                     continue
 
                 # Duplicated reading
@@ -59,8 +70,7 @@ class FairbanksScaleReader(Thread):
                 else:
                     counts[weight_str] = counts[weight_str] + 1;
 
-                if counts[weight_str] > BALANCE_THRESHOLD and weight not in previous:
-                    global current_value
+                if counts[weight_str] > BALANCE_THRESHOLD and weight not in previous:            
                     current_value = weight_str
                     print("DEBUG:", current_value)
                     previous.append(weight)
