@@ -38,7 +38,7 @@ def generate_label(lot, count, weight_str):
     draw.text((348, 940), day_time, fill='black', anchor="ms", font=fnt)
     draw.text((348, 1100), mach_id, fill='black', anchor="ms", font=fnt)
     qr = qrcode.QRCode(version=1, box_size=20, border=1)
-    qr.add_data(str(weight_str) + " lb")
+    qr.add_data(str(weight_str))
     qr.make(fit= True)
     qr_bitmap = qr.make_image(fill_color='black', back_color='white')
     draw.bitmap((105,250),qr_bitmap, fill= 'black')
