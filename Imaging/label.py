@@ -4,7 +4,7 @@ import qrcode
 #######################################################################
 mach_id = "KH09"
 uniq_id = "20210221-2-00032"
-wgth = 8
+wgth = 12
 transparency = 128        #0 means 100% transparency, 255 means 0% transparency
 #######################################################################
 img = Image.new('RGB', (696, 1109), color='white')
