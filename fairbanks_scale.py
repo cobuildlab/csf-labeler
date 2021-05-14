@@ -70,7 +70,7 @@ class FairbanksScaleReader(Thread):
                 if weight_str not in counts:
                     counts[weight_str] = 0
                 else:
-                    counts[weight_str] = counts[weight_str] + 1;
+                    counts[weight_str] = counts[weight_str] + 1
 
                 if counts[weight_str] > BALANCE_THRESHOLD and weight not in previous:
                     current_value = weight_str

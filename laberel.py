@@ -1,17 +1,14 @@
-import brother_ql
-from brother_ql.raster import BrotherQLRaster
-from brother_ql.backends.helpers import send
+import cups
 
-# Using USB connected printer 
-PRINTER_IDENTIFIER = 'usb://0x04f9:0x209c/L0Z645503'
+conn = cups.Connection()
+printers = conn.getPrinters()
+printer_name='Zebra_Technologies_ZTC_GK420t'
+device_uri = printers[printer_name]['device-uri']
+printer_serial = device_uri.split('=')[1]
 
 def send_to_printer(filename):
-    #filename = 'my_image2.png'
-    printer = BrotherQLRaster('QL-810W')
-    print_data = brother_ql.brother_ql_create.convert(printer, [filename], '62x100', red=False, lq=True)
-    
     try: 
-        send(print_data, PRINTER_IDENTIFIER)
+        conn.printFile (printer_name, filename, "Printing " + filename, {})
     except ValueError as e:
         print("It seems that the printer is OFF", e)
 
