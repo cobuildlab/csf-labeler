@@ -1,8 +1,8 @@
 import cups
+from config import printer_name
 
 conn = cups.Connection()
 printers = conn.getPrinters()
-printer_name='Zebra_Technologies_ZTC_GK420t'
 device_uri = printers[printer_name]['device-uri']
 printer_serial = device_uri.split('=')[1]
 

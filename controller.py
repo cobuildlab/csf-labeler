@@ -1,11 +1,13 @@
-# import evdev
 from evdev import InputDevice, categorize, ecodes
-from laberel import send_to_printer, conn
-from label import generate_label
+from zebra_printer import send_to_printer, conn
 from fairbanks_scale import init, current
+from label import generate_label
 from threading import Thread
-from fairbanks_scale import current
 from math import ceil
+from config import (
+    buttons_pad_src,
+    img_folder
+)
 
 class ButtonsReader(Thread):
     def __init__(self):
@@ -13,8 +15,7 @@ class ButtonsReader(Thread):
         print("We started to read buttons values")
         #creates object 'gamepad' to store the data
         #you can call it whatever you like
-        self.buttons_pad = InputDevice('/dev/input/by-id/usb-DragonRise_Inc._Generic_USB_Joystick-event-joystick')
-        self.img_folder = '/home/pi/csf-labeler/images/'
+        self.buttons_pad = InputDevice(buttons_pad_src)
         
         #print label
         self.blue_btn = 288
@@ -51,7 +52,7 @@ class ButtonsReader(Thread):
     def send_print_helper(self, rounded_weight):
         self.count = self.count + 1                        
         label = generate_label(self.day_lot, self.count, str(rounded_weight))
-        route = self.img_folder + label
+        route = img_folder + label
         self.update_last_label(label)
         send_to_printer(route)
         
@@ -89,7 +90,7 @@ class ButtonsReader(Thread):
                     if event.code == self.green_btn and not self.pause:
                         print("Green Btn pressed")
                         if self.last_label != '':
-                            route = self.img_folder + self.last_label
+                            route = img_folder + self.last_label
                             send_to_printer(route)
                             # print(current())
                     if event.code == self.white_btn:
