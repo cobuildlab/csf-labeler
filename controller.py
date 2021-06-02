@@ -18,19 +18,19 @@ class ButtonsReader(Thread):
         self.buttons_pad = InputDevice(buttons_pad_src)
         
         #print label
-        self.blue_btn = 288
+        self.blue_btn = 291
         
         #start new count new lot
-        self.yellow_btn = 289
+        self.yellow_btn = 290
         
         #pause machine
-        self.red_btn = 298
+        self.red_btn = 289
         
         #re-print last label
-        self.green_btn = 290
+        self.green_btn = 288
         
         #reset machine
-        self.white_btn = 299
+        self.white_btn = 292
         
         self.pause = False
         self.count = 0
@@ -69,10 +69,10 @@ class ButtonsReader(Thread):
                             print("Let's print label")
                             weight = current()
                             if weight != None and float(weight) > 0:
-                                if float(weight) <= 0.5:
+                                if float(weight) <= 0.59:
                                     self.send_print_helper(str(0.5))
                                 else:
-                                    self.send_print_helper(ceil(float(weight)))
+                                    self.send_print_helper(ceil(float(format(float(weight), ".1f"))))
                                 #print(event)
                         else:
                             print("Printer is busy")
