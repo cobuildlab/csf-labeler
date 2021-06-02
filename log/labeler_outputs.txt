@@ -1,0 +1,26 @@
+Exception in thread Thread-2:
+Traceback (most recent call last):
+  File "/usr/lib/python3.7/threading.py", line 917, in _bootstrap_inner
+    self.run()
+  File "/home/pi/csf-labeler/fairbanks_scale.py", line 28, in run
+    for cfg in device:
+TypeError: 'NoneType' object is not iterable
+
+We started to read buttons values
+We started to read values
+Exception in thread Thread-2:
+Traceback (most recent call last):
+  File "/usr/lib/python3.7/threading.py", line 917, in _bootstrap_inner
+    self.run()
+  File "/home/pi/csf-labeler/fairbanks_scale.py", line 28, in run
+    for cfg in device:
+TypeError: 'NoneType' object is not iterable
+
+We started to read buttons values
+We started to read values
+We started to read buttons values
+We started to read values
+We started to read buttons values
+We started to read values
+We started to read buttons values
+We started to read values
