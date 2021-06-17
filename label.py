@@ -22,7 +22,7 @@ text_6 = int(label_length_px - 10)
 text_5 = int(text_6 - vertical_padding - normal_fnt_size)
 text_4 = int(text_5 - vertical_padding - normal_fnt_size)
 text_3 = int(text_4 - vertical_padding - normal_fnt_size)
-draw_2 = int(text_3 - vertical_padding - normal_fnt_size)
+draw_2 = int(text_3 - vertical_padding - vertical_padding - normal_fnt_size)
 
 # Font types inicialitation.
 header_fnt = ImageFont.truetype(fnt_src, size=header_fnt_size)
@@ -55,8 +55,10 @@ def generate_label(lot, count, weight_str):
 
     draw.text((middle * 0.5, text_1), str(weight_str) + ' lb', fill='black', anchor='ms', font=header_fnt)
     draw.text((middle * 0.5, text_2), uniq_id, fill='black', anchor='ms', font=body_fnt)
-    draw.bitmap((50, draw_1), qr_bitmap, fill= 'black')
-    draw.rectangle([((middle * 1.5) - 30, draw_2), ((middle * 1.5) + 30, draw_2 - 60)], fill=None, outline='black', width= 2)
+    img.paste(qr_bitmap, (50, draw_1))
+    # draw.rectangle([((middle * 1.5) - 30, draw_2), ((middle * 1.5) + 30, draw_2 - 60)], fill=None, outline='black', width= 2)
+    draw.line((((middle * 1.5) - 15), draw_2, ((middle * 1.5) + 15), (draw_2 - 30)), fill='black', width=3)
+    draw.line((((middle * 1.5) + 15), draw_2, ((middle * 1.5) - 15), (draw_2 - 30)), fill='black', width=3)
     draw.text((middle * 1.5, text_3), day_name, fill='black', anchor='ms', font=body_fnt)
     draw.text((middle * 1.5, text_4), day_date, fill='black', anchor='ms', font=body_fnt)
     draw.text((middle * 1.5, text_5), day_time, fill='black', anchor='ms', font=body_fnt)
