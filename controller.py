@@ -4,8 +4,9 @@ from laberel import send_to_printer, conn
 from label import generate_label
 from fairbanks_scale import init, current
 from threading import Thread
-from fairbanks_scale import current
 from math import ceil
+from finger import finger, get_fingerprint
+import time
 
 class ButtonsReader(Thread):
     def __init__(self):
@@ -36,6 +37,10 @@ class ButtonsReader(Thread):
         self.day_lot = 1
         self.last_label = ''
 
+        #timer to request user fingerprint
+        self.user_number = -1
+        self.tick = -1
+
             
     def update_last_label(self, label):
         self.last_label = label
@@ -50,7 +55,7 @@ class ButtonsReader(Thread):
 
     def send_print_helper(self, rounded_weight):
         self.count = self.count + 1                        
-        label = generate_label(self.day_lot, self.count, str(rounded_weight))
+        label = generate_label(self.day_lot, self.count, str(rounded_weight), self.user_number)
         route = self.img_folder + label
         self.update_last_label(label)
         send_to_printer(route)
@@ -58,10 +63,22 @@ class ButtonsReader(Thread):
     def run(self):
         #evdev takes care of polling the controller in a loop
         for event in self.buttons_pad.read_loop():
+            while(self.user_number < 1):
+                if get_fingerprint():
+                    print("Detected #", finger.finger_id, "with confidence", finger.confidence)
+                    self.user_number = finger.finger_id
+                    self.tick = time.time()
+                else:
+                    print("Finger not found")
+                
+            if ((time.time()-self.tick) > 60):
+                print('vencio el tiempo')
+                self.user_number = -1
             #print(categorize(event))
                 # filters by event type
             if event.type == ecodes.EV_KEY:
                 if event.value == 1:
+                    self.tick = time.time()
                     # print(event)
                     if event.code == self.blue_btn and not self.pause:
                         if conn.getJobs() == {}:
@@ -92,8 +109,9 @@ class ButtonsReader(Thread):
                             route = self.img_folder + self.last_label
                             send_to_printer(route)
                             # print(current())
-                    if event.code == self.white_btn:
-                        print("Restarting machine...")
+                    if event.code == self.white_btn and not self.pause:
+                        print("Printing label with 0.5 lb manually...")
+                        self.send_print_helper(str(0.5))
 
 
 def init_buttons():
