@@ -18,19 +18,19 @@ class ButtonsReader(Thread):
         self.buttons_pad = InputDevice(buttons_pad_src)
         
         #print label
-        self.blue_btn = 291
+        self.blue_btn = 288
         
         #start new count new lot
-        self.yellow_btn = 290
+        self.yellow_btn = 289
         
         #pause machine
-        self.red_btn = 289
+        self.red_btn = 298
         
         #re-print last label
-        self.green_btn = 288
+        self.green_btn = 290
         
         #reset machine
-        self.white_btn = 292
+        self.white_btn = 299
         
         self.pause = False
         self.count = 0
@@ -60,10 +60,10 @@ class ButtonsReader(Thread):
         #evdev takes care of polling the controller in a loop
         for event in self.buttons_pad.read_loop():
             #print(categorize(event))
-                # filters by event type
+            # filters by event type
             if event.type == ecodes.EV_KEY:
                 if event.value == 1:
-                    # print(event)
+                    print(event)
                     if event.code == self.blue_btn and not self.pause:
                         if conn.getJobs() == {}:
                             print("Let's print label")
@@ -94,7 +94,7 @@ class ButtonsReader(Thread):
                             send_to_printer(route)
                             # print(current())
                     if event.code == self.white_btn:
-                        print("Restarting machine...")
+                        self.send_print_helper(str(0.5))
 
 
 def init_buttons():

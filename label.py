@@ -31,6 +31,8 @@ serial_fnt = ImageFont.truetype(fnt_src, size=serial_fnt_size)
 
 # Utility functions to get date and time.
 def get_date():
+    return datetime.today().strftime('%b/%d/%Y')
+def get_date_for_id():
     return datetime.today().strftime('%m/%d/%Y')
 def get_day_name():
     return datetime.today().strftime('%A')
@@ -42,8 +44,9 @@ def generate_label(lot, count, weight_str):
     day_name = get_day_name()
     day_date = get_date()
     day_time = get_time()
+    day_date_for_id = get_date_for_id()
     
-    uniq_id = day_date.replace('/','') + '-' + str(lot) + '-' + str(count)
+    uniq_id = day_date_for_id.replace('/','') + '-' + str(lot) + '-' + str(count)
     
     img = Image.new('RGB', (label_width_px, label_length_px), color='white')
     draw = ImageDraw.Draw(img)
