@@ -72,7 +72,7 @@ class ButtonsReader(Thread):
                                 if float(weight) <= 0.59:
                                     self.send_print_helper(str(0.5))
                                 else:
-                                    self.send_print_helper(ceil(float(format(float(weight), ".1f"))))
+                                    self.send_print_helper(ceil(float(format(float(weight), ".2f"))))
                                 #print(event)
                         else:
                             print("Printer is busy")

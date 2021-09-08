@@ -1,6 +1,5 @@
 import usb.core
 import usb.util
-import time
 from threading import Thread
 import sys
 from typing import Optional
@@ -9,7 +8,7 @@ current_value = None
 
 def current()-> Optional[str]:
     global current_value
-    print("DEBUG:", current_value)   
+    print("DEBUG:", current_value)
     return current_value
 
 class FairbanksScaleReader(Thread):
@@ -19,7 +18,7 @@ class FairbanksScaleReader(Thread):
         # The number of times a number should be outputted by the scale
         # before being output to the user.  This is to allow the scale
         # to balance before output
-        BALANCE_THRESHOLD = 5
+        BALANCE_THRESHOLD = 10
 
         # These IDs can be found by using `lsusb`
         VENDOR_ID = 0x0b67
@@ -40,7 +39,6 @@ class FairbanksScaleReader(Thread):
 
         # Thresholds - these are wiped each time the scale is back to ZERO
         # Archives each output, to not repeat itself indefinitely
-        previous = [0]
         # Used as threshold to wait for scale to balance before outputting to the user (100 executions by default)
         counts = {}
 
@@ -51,17 +49,14 @@ class FairbanksScaleReader(Thread):
                 # print(data)
                 # print("DEBUG",data[0],data[1],data[2],data[3],data[4], data[5], data[4] + (data[5]*256))
                 if data[1] == 5:                    
-                    previous = []
                     counts = {}
                     current_value = None
                     continue
                                 
                 weight = float(data[4] + (data[5]*256)) / 100
                 weight_str = str(weight)
-                # print("DEBUG:valid value:", weight_str)
 
                 if weight == 0.0:  # The scale goes back to zero, so we rest everything
-                    previous = []
                     counts = {}
                     current_value = None
                     continue
@@ -72,10 +67,9 @@ class FairbanksScaleReader(Thread):
                 else:
                     counts[weight_str] = counts[weight_str] + 1
 
-                if counts[weight_str] > BALANCE_THRESHOLD and weight not in previous:
+                if counts[weight_str] > BALANCE_THRESHOLD :
                     current_value = weight_str
-                    previous.append(weight)
-                                   
+                    counts = {}
 
             except usb.core.USBError as e:
                 data = None
