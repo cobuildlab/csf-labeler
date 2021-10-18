@@ -33,7 +33,7 @@ def check_network_conn():
 
 def system_status():
     global pause
-    if get_printer_status() and check_scale_conn() and check_scanner_conn() and check_network_conn():
+    if get_printer_status() and check_scale_conn():
         pause = False
         return True
     else:
@@ -74,7 +74,6 @@ class ButtonsReader(Thread):
             myfile = img_folder + self.last_label
             if os.path.isfile(myfile):
                 os.remove(myfile)
-                # os.remove(myfile)
         self.last_label = label
 
     #Start new lot and count
