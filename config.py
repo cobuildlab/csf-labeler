@@ -7,9 +7,6 @@ buttons_pad_src = '/dev/input/by-id/usb-DragonRise_Inc._Generic_USB_Joystick-eve
 # Label as image folder path.
 img_folder = '/home/pi/csf-labeler/images/'
 
-# Database folder path.
-db_folder = '/home/pi/csf-labeler/db/labels.db'
-
 # Font source path.
 fnt_src = '/home/pi/csf-labeler/arial.ttf'
 

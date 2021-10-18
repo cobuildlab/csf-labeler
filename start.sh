@@ -1,5 +1,2 @@
 #!/bin/bash
-
-echo "Starting automatic Labeler"
-cd /home/pi/csf-labeler
-python3 controller.py
+gnome-terminal --window-with-profile=csf -- python3 /home/pi/csf-labeler/app.py

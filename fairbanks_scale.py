@@ -11,6 +11,26 @@ def current()-> Optional[str]:
     print("DEBUG:", current_value)
     return current_value
 
+def check_scale_conn():
+    scale_device = usb.core.find(idVendor=0x0b67, idProduct=0x555e)
+    if scale_device != None:
+        return True
+    else:
+        return False
+
+def check_scanner_conn():
+    scanner_device = usb.core.find(idVendor=0xe851, idProduct=0x1000)
+    if scanner_device != None:
+        return True
+    else:
+        return False
+
+def check_printer_conn():
+    printer_device = usb.core.find(idVendor=0x0a5f, idProduct=0x011c)
+    if printer_device != None:
+        return True
+    else:
+        return False
 class FairbanksScaleReader(Thread):
     def run(self):
         print("We started to read values")
@@ -20,10 +40,11 @@ class FairbanksScaleReader(Thread):
         # to balance before output
         BALANCE_THRESHOLD = 10
 
+
+
         # These IDs can be found by using `lsusb`
-        VENDOR_ID = 0x0b67
-        PRODUCT_ID = 0x555e
-        device = usb.core.find(idVendor=VENDOR_ID, idProduct=PRODUCT_ID)
+        device = usb.core.find(idVendor=0x0b67, idProduct=0x555e)
+
         for cfg in device:
             for intf in cfg:
                 if device.is_kernel_driver_active(intf.bInterfaceNumber):
@@ -79,5 +100,4 @@ class FairbanksScaleReader(Thread):
 def init():
     reader = FairbanksScaleReader()
     reader.start()
-    reader.join()
 
