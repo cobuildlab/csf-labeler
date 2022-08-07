@@ -25,6 +25,7 @@ def check_scanner_conn():
         return False
 
 def check_printer_conn():
+    #if 410 then : printer_device = usb.core.find(idVendor=0x0a5f, idProduct=0x011c)
     printer_device = usb.core.find(idVendor=0x0a5f, idProduct=0x0120)
     if printer_device != None:
         return True

@@ -1,4 +1,6 @@
 # Printer Cups name
+# if printer version 410
+# printer_name = 'Zebra_Technologies_ZTC_ZD410-203dpi_ZPL'
 printer_name = 'ZTC-ZD420-203dpi-ZPL'
 
 # Input Pad source path.
