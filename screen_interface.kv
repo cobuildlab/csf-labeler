@@ -20,15 +20,42 @@
         BoxLayout:
             orientation: "horizontal"
             Label:
-                id: weight_label
-                text: "[b]1.5 lb[/b]"
-                markup: True
-                font_size: "40sp"
-            Label:
                 id: status_label
                 text: "[b][color=#00ff00]READY[/color][/b]"
                 markup: True
                 font_size: "40sp"
+        
+        
+        BoxLayout:
+            orientation:"horizontal"
+            BoxLayout:
+                orientation: "horizontal"
+                BoxLayout:
+                    orientation: "vertical"
+                    Label:
+            	        id: barcode_status
+            	        text:"[b]Barcode[/b]"
+            	        markup: True
+            	        font_size:"40sp"
+                    Label:
+            	        id: barcode_label
+            	        text:"[b]barcode[/b]"
+            	        markup: True
+            	        font_size:"30sp"
+            BoxLayout:
+                orientation: "horizontal"
+                BoxLayout:
+                    orientation: "vertical"
+                    Label:
+                        id: weight_status
+                        text: "[b]Weight[/b]"
+                        markup: True
+                        font_size: "40sp"
+                    Label:
+            	        id: weight_label
+            	        text:"[b]1.5 lb[/b]"
+            	        markup: True
+            	        font_size:"30sp"
         BoxLayout:
             orientation: "horizontal"
             BoxLayout:

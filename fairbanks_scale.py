@@ -8,7 +8,6 @@ current_value = None
 
 def current()-> Optional[str]:
     global current_value
-    print("DEBUG:", current_value)
     return current_value
 
 def check_scale_conn():
@@ -26,13 +25,14 @@ def check_scanner_conn():
         return False
 
 def check_printer_conn():
-    printer_device = usb.core.find(idVendor=0x0a5f, idProduct=0x011c)
+    printer_device = usb.core.find(idVendor=0x0a5f, idProduct=0x0120)
     if printer_device != None:
         return True
     else:
         return False
 class FairbanksScaleReader(Thread):
     def run(self):
+    
         print("We started to read values")
 
         # The number of times a number should be outputted by the scale
@@ -73,7 +73,7 @@ class FairbanksScaleReader(Thread):
                     counts = {}
                     current_value = None
                     continue
-                                
+                    
                 weight = float(data[4] + (data[5]*256)) / 100
                 weight_str = str(weight)
 

@@ -1,27 +1,3 @@
-Traceback (most recent call last):
-  File "/home/pi/csf-labeler/controller.py", line 2, in <module>
-    from zebra_printer import send_to_printer, conn
-  File "/home/pi/csf-labeler/zebra_printer.py", line 6, in <module>
-    device_uri = printers[printer_name]['device-uri']
-KeyError: 'Zebra_Technologies_ZTC_ZD410-203dpi_ZPL'
-Traceback (most recent call last):
-  File "/home/pi/csf-labeler/controller.py", line 2, in <module>
-    from zebra_printer import send_to_printer, conn
-  File "/home/pi/csf-labeler/zebra_printer.py", line 6, in <module>
-    device_uri = printers[printer_name]['device-uri']
-KeyError: 'Zebra_Technologies_ZTC_ZD410-203dpi_ZPL'
-Traceback (most recent call last):
-  File "/home/pi/csf-labeler/controller.py", line 2, in <module>
-    from zebra_printer import send_to_printer, conn
-  File "/home/pi/csf-labeler/zebra_printer.py", line 6, in <module>
-    device_uri = printers[printer_name]['device-uri']
-KeyError: 'Zebra_Technologies_ZTC_ZD410-203dpi_ZPL'
-Traceback (most recent call last):
-  File "/home/pi/csf-labeler/controller.py", line 2, in <module>
-    from zebra_printer import send_to_printer, conn
-  File "/home/pi/csf-labeler/zebra_printer.py", line 6, in <module>
-    device_uri = printers[printer_name]['device-uri']
-KeyError: 'Zebra_Technologies_ZTC_ZD410-203dpi_ZPL'
 Unable to init server: Could not connect: Connection refused
 # Failed to parse arguments: Cannot open display: 
 Unable to init server: Could not connect: Connection refused

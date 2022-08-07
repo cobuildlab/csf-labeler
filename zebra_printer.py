@@ -8,6 +8,7 @@ printers = conn.getPrinters()
 device_uri = printers[printer_name]['device-uri']
 printer_status = printers[printer_name]['printer-state']
 printer_serial = device_uri.split('=')[1]
+
 def get_printer_serial()-> Optional[str]:
     global printer_serial
     return printer_serial

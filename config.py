@@ -1,8 +1,11 @@
 # Printer Cups name
-printer_name = 'Zebra_Technologies_ZTC_ZD410-203dpi_ZPL'
+printer_name = 'ZTC-ZD420-203dpi-ZPL'
 
 # Input Pad source path.
 buttons_pad_src = '/dev/input/by-id/usb-DragonRise_Inc._Generic_USB_Joystick-event-joystick'
+
+# Barcode scanner source path.
+barcode_scanner_src ='/dev/input/by-id/usb-Jieli_Technology_USB_PHY_2.0-event-kbd'
 
 # Label as image folder path.
 img_folder = '/home/pi/csf-labeler/images/'
@@ -25,9 +28,9 @@ label_length_px = 254
 
 # Text font size - This should be set in pixels.
 header_fnt_size = 40
-normal_fnt_size = 28
-serial_fnt_size = 16
+normal_fnt_size = 18
+serial_fnt_size = 18
 
 # Text Align variables. 
-vertical_padding = 10
+vertical_padding = 15
 middle = int(label_width_px/2)
