@@ -1,0 +1,153 @@
+<ScreenLayout>
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        BoxLayout:
+            orientation: "horizontal"
+            Image:
+                source: 'csf_logo.png'
+                size: self.texture.size
+            Label:
+                id: datetime_label
+                text: "[i]9/20/2021 15:40[/i]"
+                markup: True
+                font_size: "30sp"
+            Label:
+                id: temp_label
+                text: "[i]79F[/i]"
+                markup: True
+                font_size: "30sp"
+        BoxLayout:
+            orientation: "horizontal"
+            Label:
+                id: status_label
+                text: "[b][color=#00ff00]READY[/color][/b]"
+                markup: True
+                font_size: "40sp"
+        
+        
+        BoxLayout:
+            orientation:"horizontal"
+            BoxLayout:
+                orientation: "horizontal"
+                BoxLayout:
+                    orientation: "vertical"
+                    Label:
+            	        id: barcode_status
+            	        text:"[b]Barcode[/b]"
+            	        markup: True
+            	        font_size:"40sp"
+                    Label:
+            	        id: barcode_label
+            	        text:"[b]barcode[/b]"
+            	        markup: True
+            	        font_size:"30sp"
+            BoxLayout:
+                orientation: "horizontal"
+                BoxLayout:
+                    orientation: "vertical"
+                    Label:
+                        id: weight_status
+                        text: "[b]Weight[/b]"
+                        markup: True
+                        font_size: "40sp"
+                    Label:
+            	        id: weight_label
+            	        text:"[b]1.5 lb[/b]"
+            	        markup: True
+            	        font_size:"30sp"
+        BoxLayout:
+            orientation: "horizontal"
+            BoxLayout:
+                orientation: "vertical"
+                Label:
+                    id: count_label_title
+                    text: "[i]count[/i]"
+                    markup: True
+                    text_size: self.size
+                    halign: 'center'
+                Label:
+                    id: count_label_value
+                    text: "[b]1[/b]"
+                    markup: True
+                    font_size: "30sp"
+            BoxLayout:
+                orientation: "vertical"
+                Label:
+                    id: serie_label_title
+                    text: "[i]serie[/i]"
+                    markup: True
+                    text_size: self.size
+                    halign: 'center'
+                Label:
+                    id: serie_label_value
+                    text: "[b]1[/b]"
+                    markup: True
+                    font_size: "30sp"
+            BoxLayout:
+                orientation: "vertical"
+                Label:
+                    id: module_id_label_title
+                    text: "[i]module id[/i]"
+                    markup: True
+                    text_size: self.size
+                    halign: 'center'
+                Label:
+                    id: module_id_label_vallue
+                    text: "[i]ZDN110[/i]"
+                    markup: True
+                    font_size: "30sp"
+        BoxLayout:
+            orientation: "horizontal"
+            BoxLayout:
+                orientation: "vertical"
+                Label:
+                    id: printer_label_title
+                    text: "[i]printer[/i]"
+                    markup: True
+                    text_size: self.size
+                    halign: 'center'
+                Label:
+                    id: printer_label_value
+                    text: "[b][color=#ff0000]FAIL[/color][/b]"
+                    markup: True
+                    font_size: "30sp"
+            BoxLayout:
+                orientation: "vertical"
+                Label:
+                    id: scale_label_title
+                    text: "[i]scale[/i]"
+                    markup: True
+                    text_size: self.size
+                    halign: 'center'
+                Label:
+                    id: scale_label_value
+                    text: "[b][color=#00ff00]OK[/color][/b]"
+                    markup: True
+                    font_size: "30sp"
+            BoxLayout:
+                orientation: "vertical"
+                Label:
+                    id: network_label_title
+                    text: "[i]network[/i]"
+                    markup: True
+                    text_size: self.size
+                    halign: 'center'
+                Label:
+                    id: network_label_value
+                    text: "[b][color=#00ff00]OK[/color][/b]"
+                    markup: True
+                    font_size: "30sp"
+            BoxLayout:
+                orientation: "vertical"
+                Label:
+                    id: scanner_label_title
+                    text: "[i]scanner[/i]"
+                    markup: True
+                    text_size: self.size
+                    halign: 'center'
+                Label:
+                    id: scanner_label_value
+                    text: "[b][color=#00ff00]OK[/color][/b]"
+                    markup: True
+                    font_size: "30sp"
