@@ -1,19 +1,19 @@
 # Printer Cups name
 # if printer version 410
 # printer_name = 'Zebra_Technologies_ZTC_ZD410-203dpi_ZPL'
-printer_name = 'ZTC-ZD420-203dpi-ZPL'
+printer_name = 'Zebra_Technologies_ZTC_ZD420-203dpi_ZPL'
 
 # Input Pad source path.
 buttons_pad_src = '/dev/input/by-id/usb-DragonRise_Inc._Generic_USB_Joystick-event-joystick'
 
 # Barcode scanner source path.
-barcode_scanner_src ='/dev/input/by-id/usb-Jieli_Technology_USB_PHY_2.0-event-kbd'
+barcode_scanner_src ='/dev/input/by-id/usb-Newland_Computer_KeyPos_SF-event-kbd'
 
 # Label as image folder path.
-img_folder = '/home/pi/csf-labeler/images/'
+img_folder = '/home/cobuild/csf-labeler/images/'
 
 # Font source path.
-fnt_src = '/home/pi/csf-labeler/arial.ttf'
+fnt_src = '/home/cobuild/csf-labeler/arial.ttf'
 
 # Label resolution - This should be set in pixels.
 #label_width_px = 457

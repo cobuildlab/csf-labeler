@@ -18,7 +18,7 @@ def check_scale_conn():
         return False
 
 def check_scanner_conn():
-    scanner_device = usb.core.find(idVendor=0xe851, idProduct=0x1000)
+    scanner_device = usb.core.find(idVendor=0x1eab, idProduct=0x9310)
     if scanner_device != None:
         return True
     else:

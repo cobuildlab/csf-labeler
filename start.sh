@@ -1,2 +1,2 @@
 #!/bin/bash]
-gnome-terminal --window-with-profile=csf -- python3 /home/pi/csf-labeler/app.py -f
+gnome-terminal --window-with-profile=csf -- python3 /home/cobuild/csf-labeler/app.py

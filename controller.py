@@ -2,6 +2,7 @@ from evdev import InputDevice, categorize, ecodes
 from zebra_printer import send_to_printer, conn, printer_serial
 from fairbanks_scale import init, current, check_scale_conn, check_scanner_conn
 from label import generate_label
+from utils import custom_upper
 from threading import Thread
 from math import ceil
 import uuid
@@ -26,7 +27,12 @@ scanned_code = ""
 input_code = ""
 
 #usb barcode scanner will match characters in this array based off keycode to verify correct string output due to different encoding
-keys = "X^1234567890-XXXqwertzuiopXXXXasdfghjkl:'XXXyxcvbnm,.XXXX XXXXXXXXXXXXXXXX"
+KEY_MAPPING= {'KEY_EQUAL':'+','KEY_SLASH':'/','KEY_SPACE':' ','KEY_DOT':'.','KEY_MINUS':'-','KEY_Q': 'q', 'KEY_W': 'w', 'KEY_E': 'e', 'KEY_R': 'r', 
+'KEY_T': 't', 'KEY_Y': 'y',
+ 'KEY_U': 'u', 'KEY_I': 'i', 'KEY_O': 'o', 'KEY_P': 'p', 'KEY_A': 'a', 'KEY_S': 's', 'KEY_D': 'd', 'KEY_F': 'f', 'KEY_G': 'g', 'KEY_H': 'h', 
+ 'KEY_J': 'j', 'KEY_K': 'k', 'KEY_L': 'l', 'KEY_Z': 'z', 'KEY_X': 'x', 'KEY_C': 'c', 'KEY_V': 'v', 'KEY_B': 'b', 'KEY_N': 'n', 'KEY_M': 'm', 
+ 'KEY_1': '1', 'KEY_2': '2', 'KEY_3': '3', 'KEY_4': '4', 'KEY_5': '5', 'KEY_6': '6', 'KEY_7': '7', 'KEY_8': '8', 'KEY_9': '9', 'KEY_0': '0'}
+
 
 def code()-> Optional[str]:
     global scanned_code
@@ -54,24 +60,43 @@ def system_status():
         pause = True
         return False
 
+KEY_UP = 0
+KEY_DOWN = 1
+LEFT_SHIFT = 42
+KEY_ENTER = 28
+
 class CodeScanner(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.code_scanner = InputDevice(barcode_scanner_src)
     def run(self):
         global input_code, scanned_code, keys, unique_id
+        to_upper_case = False
         for event in self.code_scanner.read_loop():
             if event.type == ecodes.EV_KEY:
                 data = categorize(event)
-                if data.keystate == 1 and data.scancode != 42:
+                if data.scancode == LEFT_SHIFT:
+                    to_upper_case = True
+                    continue
+
+                if data.keystate != KEY_UP:
+                    continue
+                    
                 #Each event is 1 character, have to store all events until code 28 which is enter/done. 
                 #Store entire scan in global variable and reset the input.
-                    if data.scancode == 28:
-                        scanned_code = input_code.replace("X","")
-                        unique_id = str(uuid.uuid4())
-                        input_code = ""
-                    else:
-                        input_code += keys[data.scancode].upper()
+                if data.scancode == KEY_ENTER:                   
+                    scanned_code = input_code
+                    print("scanned_code:",scanned_code)
+                    unique_id = str(uuid.uuid4())
+                    input_code = ""
+                else:                    
+                    print(data.scancode, data.keycode, data.scancode in KEY_MAPPING)  
+                    if data.keycode in KEY_MAPPING:
+                        if to_upper_case == True:
+                            input_code += custom_upper(KEY_MAPPING[data.keycode])
+                            to_upper_case = False
+                        else:
+                            input_code += KEY_MAPPING[data.keycode]
 
 def init_scanner():
     reader2 = CodeScanner()
@@ -137,9 +162,13 @@ class ButtonsReader(Thread):
     def send_url_request(self):
         global scanned_code, unique_id
         weight = current()
-        round_weight = (ceil(float(format(float(weight), ".2f"))))
+        if float(weight) <= 0.50:
+            round_weight = str(0.5)        
+        else:
+            round_weight = (ceil(float(format(float(weight), ".2f"))))
         url = "https://csfcouriersltd.com/ws/weighted_package"
         request_data = {"receipt_number": scanned_code,"packageId": unique_id,"weight": round_weight, "username":"csfcourierltd","password":"6Ld9y1saAAAAAFY5xdTG3bCjZ7jCnfhqztPdXKUL"}
+        print("REQUEST DATA", request_data)
         try:
             x = requests.post(url, data = request_data)
             print(x.text)
