@@ -2,6 +2,7 @@ from evdev import InputDevice, categorize, ecodes
 from zebra_printer import send_to_printer, conn, printer_serial
 from fairbanks_scale import init, current, check_scale_conn, check_scanner_conn
 from label import generate_label
+from utils import custom_upper
 from threading import Thread
 from math import ceil
 import uuid
@@ -26,7 +27,11 @@ scanned_code = ""
 input_code = ""
 
 #usb barcode scanner will match characters in this array based off keycode to verify correct string output due to different encoding
-KEY_MAPPING= {'KEY_EQUAL':'+','KEY_SLASH':'/','KEY_SPACE':' ','KEY_DOT':'.','KEY_MINUS':'-','KEY_Q': 'Q', 'KEY_W': 'W', 'KEY_E': 'E', 'KEY_R': 'R', 'KEY_T': 'T', 'KEY_Y': 'Y', 'KEY_U': 'U', 'KEY_I': 'I', 'KEY_O': 'O', 'KEY_P': 'P', 'KEY_A': 'A', 'KEY_S': 'S', 'KEY_D': 'D', 'KEY_F': 'F', 'KEY_G': 'G', 'KEY_H': 'H', 'KEY_J': 'J', 'KEY_K': 'K', 'KEY_L': 'L', 'KEY_Z': 'Z', 'KEY_X': 'X', 'KEY_C': 'C', 'KEY_V': 'V', 'KEY_B': 'B', 'KEY_N': 'N', 'KEY_M': 'M', 'KEY_1': '1', 'KEY_2': '2', 'KEY_3': '3', 'KEY_4': '4', 'KEY_5': '5', 'KEY_6': '6', 'KEY_7': '7', 'KEY_8': '8', 'KEY_9': '9', 'KEY_0': '0'}
+KEY_MAPPING= {'KEY_EQUAL':'+','KEY_SLASH':'/','KEY_SPACE':' ','KEY_DOT':'.','KEY_MINUS':'-','KEY_Q': 'q', 'KEY_W': 'w', 'KEY_E': 'e', 'KEY_R': 'r', 
+'KEY_T': 't', 'KEY_Y': 'y',
+ 'KEY_U': 'u', 'KEY_I': 'i', 'KEY_O': 'o', 'KEY_P': 'p', 'KEY_A': 'a', 'KEY_S': 's', 'KEY_D': 'd', 'KEY_F': 'f', 'KEY_G': 'g', 'KEY_H': 'h', 
+ 'KEY_J': 'j', 'KEY_K': 'k', 'KEY_L': 'l', 'KEY_Z': 'z', 'KEY_X': 'x', 'KEY_C': 'c', 'KEY_V': 'v', 'KEY_B': 'b', 'KEY_N': 'n', 'KEY_M': 'm', 
+ 'KEY_1': '1', 'KEY_2': '2', 'KEY_3': '3', 'KEY_4': '4', 'KEY_5': '5', 'KEY_6': '6', 'KEY_7': '7', 'KEY_8': '8', 'KEY_9': '9', 'KEY_0': '0'}
 
 
 def code()-> Optional[str]:
@@ -66,10 +71,12 @@ class CodeScanner(Thread):
         self.code_scanner = InputDevice(barcode_scanner_src)
     def run(self):
         global input_code, scanned_code, keys, unique_id
+        to_upper_case = False
         for event in self.code_scanner.read_loop():
             if event.type == ecodes.EV_KEY:
                 data = categorize(event)
                 if data.scancode == LEFT_SHIFT:
+                    to_upper_case = True
                     continue
 
                 if data.keystate != KEY_UP:
@@ -78,13 +85,18 @@ class CodeScanner(Thread):
                 #Each event is 1 character, have to store all events until code 28 which is enter/done. 
                 #Store entire scan in global variable and reset the input.
                 if data.scancode == KEY_ENTER:                   
-                    scanned_code = input_code.replace('*','')                
+                    scanned_code = input_code
+                    print("scanned_code:",scanned_code)
                     unique_id = str(uuid.uuid4())
                     input_code = ""
                 else:                    
                     print(data.scancode, data.keycode, data.scancode in KEY_MAPPING)  
                     if data.keycode in KEY_MAPPING:
-                        input_code += KEY_MAPPING[data.keycode]
+                        if to_upper_case == True:
+                            input_code += custom_upper(KEY_MAPPING[data.keycode])
+                            to_upper_case = False
+                        else:
+                            input_code += KEY_MAPPING[data.keycode]
 
 def init_scanner():
     reader2 = CodeScanner()

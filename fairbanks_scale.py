@@ -101,4 +101,3 @@ class FairbanksScaleReader(Thread):
 def init():
     reader = FairbanksScaleReader()
     reader.start()
-
