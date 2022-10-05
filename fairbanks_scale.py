@@ -12,38 +12,21 @@ def current()-> Optional[str]:
 
 def check_scale_conn():
     scale_device = usb.core.find(idVendor=0x0b67, idProduct=0x555e)
-    if scale_device != None:
+    if scale_device is not None:
         return True
     else:
         return False
 
-def check_scanner_conn():
-    scanner_device = usb.core.find(idVendor=0x2dd6, idProduct=0x2141)
-    if scanner_device != None:
-        return True
-    else:
-        return False
 
-def check_printer_conn():
-    #if 410 then : 
-    # printer_device = usb.core.find(idVendor=0x0a5f, idProduct=0x011c)
-    # if 420 then:
-    printer_device = usb.core.find(idVendor=0x0a5f, idProduct=0x0120)
-    if printer_device != None:
-        return True
-    else:
-        return False
 class FairbanksScaleReader(Thread):
     def run(self):
-    
+
         print("We started to read values")
 
         # The number of times a number should be outputted by the scale
         # before being output to the user.  This is to allow the scale
         # to balance before output
         BALANCE_THRESHOLD = 10
-
-
 
         # These IDs can be found by using `lsusb`
         device = usb.core.find(idVendor=0x0b67, idProduct=0x555e)
@@ -72,11 +55,11 @@ class FairbanksScaleReader(Thread):
                 data = device.read(endpoint.bEndpointAddress, endpoint.wMaxPacketSize)
                 # print(data)
                 # print("DEBUG",data[0],data[1],data[2],data[3],data[4], data[5], data[4] + (data[5]*256))
-                if data[1] == 5:                    
+                if data[1] == 5:
                     counts = {}
                     current_value = None
                     continue
-                    
+
                 weight = float(data[4] + (data[5]*256)) / 100
                 weight_str = str(weight)
 
@@ -100,7 +83,7 @@ class FairbanksScaleReader(Thread):
                 if e.args == ('Operation timed out',):
                     continue
 
-def init():
+def init_scale():
     reader = FairbanksScaleReader()
     reader.start()
 

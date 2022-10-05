@@ -1,18 +1,16 @@
 from PIL import Image, ImageDraw, ImageFont
-from zebra_printer import printer_serial
 from datetime import datetime
 from qrcode import QRCode
-import json
-from config import (
-    img_folder,
-    fnt_src, 
-    label_width_px, 
-    label_length_px, 
+
+from config import (   img_folder,
+    fnt_src,
+    label_width_px,
+    label_length_px,
     header_fnt_size,
-    normal_fnt_size, 
-    serial_fnt_size, 
-    vertical_padding, 
-    middle 
+    normal_fnt_size,
+    serial_fnt_size,
+    vertical_padding,
+    middle
 )
 
 # QR and text dynamic positions.
@@ -48,15 +46,17 @@ def generate_label(lot, count, weight_str, barcode, unique_uuid):
     day_date = get_date()
     day_time = get_time()
     day_date_for_id = get_date_for_id()
-    
+
     uniq_id = day_date_for_id.replace('/','') + '-' + str(lot) + '-' + str(count)
-    
+
     img = Image.new('RGB', (label_width_px, label_length_px), color='white')
     draw = ImageDraw.Draw(img)
-    
+
     qr = QRCode(version=4, box_size=5, border=1)
-    
-    qr.add_data(unique_uuid)
+    if barcode:
+        qr.add_data(unique_uuid)
+    else:
+        qr.add_data(weight_str)
     qr.make(fit=True)
     qr_bitmap = qr.make_image(fill_color='black', back_color='white')
 
@@ -71,9 +71,9 @@ def generate_label(lot, count, weight_str, barcode, unique_uuid):
     draw.text((middle * 1.5, text_2), uniq_id, fill='black', anchor='ms', font=serial_fnt)
     draw.text((middle * 1.5, text_5), barcode[-12:] if barcode else "No Barcode" , fill='black', anchor='ms', font=serial_fnt)
     draw.text((middle * 1.5, text_6), unique_uuid[-12:], fill='black', anchor='ms', font=serial_fnt)
-    
+
     img_uniq_name = uniq_id + '.png'
     img.save(img_folder + img_uniq_name)
-    
+
     return img_uniq_name
 

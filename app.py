@@ -5,9 +5,11 @@ from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.clock import Clock
-from controller import init_buttons,init_scanner, code, get_day_lot, get_count, system_status, check_network_conn
-from fairbanks_scale import current, check_scale_conn, check_scanner_conn
-from zebra_printer import get_printer_serial, get_printer_status
+from controller import init_buttons,init_scanner, code, get_day_lot, get_count, system_status
+from network import check_network_conn
+from fairbanks_scale import current, check_scale_conn
+from scanner import check_scanner_conn
+from printer import get_printer_serial, get_printer_status
 from label import get_date, get_time
 from gpiozero import CPUTemperature
 
@@ -32,11 +34,13 @@ class ScreenLayout(Widget):
         self.ids.network_label_value.text = f'[b][color=#00ff00]OK[/color][/b]' if check_network_conn() else f'[b][color=#ff0000]FAIL[/color][/b]'
         self.ids.scanner_label_value.text = f'[b][color=#00ff00]OK[/color][/b]' if check_scanner_conn() else f'[b][color=#ff0000]FAIL[/color][/b]'
 
+
 class CSFApp(App):
     screen = ScreenLayout()
     def build(self):
         Clock.schedule_interval(lambda dt: self.screen.update_data(), 1)
         return self.screen        
+
 
 init_buttons()
 init_scanner()
