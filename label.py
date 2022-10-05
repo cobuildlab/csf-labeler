@@ -1,10 +1,8 @@
 from PIL import Image, ImageDraw, ImageFont
-from zebra_printer import printer_serial
 from datetime import datetime
 from qrcode import QRCode
-import json
-from config import (
-    img_folder,
+
+from config import (   img_folder,
     fnt_src, 
     label_width_px, 
     label_length_px, 
@@ -55,8 +53,10 @@ def generate_label(lot, count, weight_str, barcode, unique_uuid):
     draw = ImageDraw.Draw(img)
     
     qr = QRCode(version=4, box_size=5, border=1)
-    
-    qr.add_data(unique_uuid)
+    if barcode:
+        qr.add_data(unique_uuid)
+    else:
+        qr.add_data(weight_str)
     qr.make(fit=True)
     qr_bitmap = qr.make_image(fill_color='black', back_color='white')
 

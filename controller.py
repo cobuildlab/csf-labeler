@@ -1,6 +1,7 @@
 from evdev import InputDevice, categorize, ecodes
-from zebra_printer import send_to_printer, conn, printer_serial
-from fairbanks_scale import init, current, check_scale_conn, check_scanner_conn
+from printer import send_to_printer, conn
+from fairbanks_scale import init_scale, current, check_scale_conn
+from scanner import get_scanner_device
 from label import generate_label
 from utils import custom_upper
 from threading import Thread
@@ -9,15 +10,11 @@ import uuid
 from typing import Optional
 from config import (
     buttons_pad_src,
-    barcode_scanner_src,
     img_folder
 )
-from zebra_printer import get_printer_status
-import urllib.request
+from printer import get_printer_status
 import os
-import json
 import requests
-import time
 
 unique_id = ""
 day_lot = None
@@ -44,12 +41,7 @@ def get_count()-> Optional[str]:
     global count
     return count
 
-def check_network_conn():
-    try:
-        urllib.request.urlopen('https://google.com')
-        return True
-    except:
-        return False
+
 
 def system_status():
     global pause
@@ -68,7 +60,7 @@ KEY_ENTER = 28
 class CodeScanner(Thread):
     def __init__(self):
         Thread.__init__(self)
-        self.code_scanner = InputDevice(barcode_scanner_src)
+        self.code_scanner = get_scanner_device()
     def run(self):
         global input_code, scanned_code, keys, unique_id
         to_upper_case = False
@@ -92,7 +84,7 @@ class CodeScanner(Thread):
                 else:                    
                     print(data.scancode, data.keycode, data.scancode in KEY_MAPPING)  
                     if data.keycode in KEY_MAPPING:
-                        if to_upper_case == True:
+                        if to_upper_case:
                             input_code += custom_upper(KEY_MAPPING[data.keycode])
                             to_upper_case = False
                         else:
@@ -101,7 +93,7 @@ class CodeScanner(Thread):
 def init_scanner():
     reader2 = CodeScanner()
     reader2.start()
-    init()  
+    init_scale()
 
 class ButtonsReader(Thread):
     def __init__(self):
@@ -223,5 +215,5 @@ class ButtonsReader(Thread):
 def init_buttons():
     reader = ButtonsReader()
     reader.start()
-    init()
+    #init_scale()
     

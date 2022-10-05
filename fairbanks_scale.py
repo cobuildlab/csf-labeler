@@ -12,25 +12,12 @@ def current()-> Optional[str]:
 
 def check_scale_conn():
     scale_device = usb.core.find(idVendor=0x0b67, idProduct=0x555e)
-    if scale_device != None:
+    if scale_device is not None:
         return True
     else:
         return False
 
-def check_scanner_conn():
-    scanner_device = usb.core.find(idVendor=0x1eab, idProduct=0x9310)
-    if scanner_device != None:
-        return True
-    else:
-        return False
 
-def check_printer_conn():
-    #if 410 then : printer_device = usb.core.find(idVendor=0x0a5f, idProduct=0x011c)
-    printer_device = usb.core.find(idVendor=0x0a5f, idProduct=0x0120)
-    if printer_device != None:
-        return True
-    else:
-        return False
 class FairbanksScaleReader(Thread):
     def run(self):
     
@@ -40,8 +27,6 @@ class FairbanksScaleReader(Thread):
         # before being output to the user.  This is to allow the scale
         # to balance before output
         BALANCE_THRESHOLD = 10
-
-
 
         # These IDs can be found by using `lsusb`
         device = usb.core.find(idVendor=0x0b67, idProduct=0x555e)
@@ -98,6 +83,7 @@ class FairbanksScaleReader(Thread):
                 if e.args == ('Operation timed out',):
                     continue
 
-def init():
+def init_scale():
     reader = FairbanksScaleReader()
     reader.start()
+

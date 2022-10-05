@@ -1,7 +1,15 @@
+import usb.core
 # Printer Cups name
-# if printer version 410
-# printer_name = 'Zebra_Technologies_ZTC_ZD410-203dpi_ZPL'
-printer_name = 'Zebra_Technologies_ZTC_ZD420-203dpi_ZPL'
+PRINTERS_CONFIG = [
+    {
+        "name":'Zebra_Technologies_ZTC_ZD420-203dpi_ZPL',
+        "device": lambda: usb.core.find(idVendor=0x0a5f, idProduct=0x0120)
+    },
+    {
+        "name":'Zebra_Technologies_ZTC_ZD410-203dpi_ZPL',
+        "device": lambda: usb.core.find(idVendor=0x0a5f, idProduct=0x011c)
+    },
+]
 
 # Input Pad source path.
 buttons_pad_src = '/dev/input/by-id/usb-DragonRise_Inc._Generic_USB_Joystick-event-joystick'
