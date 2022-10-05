@@ -1,11 +1,10 @@
 import os
-#os.environ['KIVY_SDL_GL_ALPHA_SIZE'] = '0'
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.clock import Clock
-from controller import init_buttons,init_scanner, code, get_day_lot, get_count, system_status
+from controller import init_buttons, init_scanner, code, get_day_lot, get_count, system_status
 from network import check_network_conn
 from fairbanks_scale import current, check_scale_conn
 from scanner import check_scanner_conn
@@ -14,10 +13,9 @@ from label import get_date, get_time
 from gpiozero import CPUTemperature
 
 Window.fullscreen = "auto"
-
-Builder.load_file('screen_interface.kv')
-
+Builder.load_file(os.path.join('assets', 'screen_interface.kv'))
 previous_code = None
+
 
 class ScreenLayout(Widget):
     def update_data(self):
@@ -37,9 +35,10 @@ class ScreenLayout(Widget):
 
 class CSFApp(App):
     screen = ScreenLayout()
+
     def build(self):
         Clock.schedule_interval(lambda dt: self.screen.update_data(), 1)
-        return self.screen        
+        return self.screen
 
 
 init_buttons()

@@ -1,6 +1,6 @@
 from evdev import InputDevice
 import usb.core
-from config import     barcode_scanner_src
+from config import BARCODE_CONFIG
 
 
 def check_scanner_conn():
@@ -10,8 +10,10 @@ def check_scanner_conn():
     else:
         return False
 
+
 def get_scanner_device():
-    code_scanner = InputDevice(barcode_scanner_src)
-    if code_scanner:
-        return code_scanner
+    for barcode_config in BARCODE_CONFIG:
+        code_scanner = InputDevice(barcode_config["src"])
+        if code_scanner:
+            return code_scanner
     return None
