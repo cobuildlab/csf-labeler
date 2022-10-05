@@ -1,0 +1,1 @@
+1. No wifi no printing

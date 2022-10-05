@@ -7,6 +7,8 @@ printer_name = 'Zebra_Technologies_ZTC_ZD420-203dpi_ZPL'
 buttons_pad_src = '/dev/input/by-id/usb-DragonRise_Inc._Generic_USB_Joystick-event-joystick'
 
 # Barcode scanner source path.
+# barcode_scanner_src ='/dev/input/by-id/usb-Newland_Computer_KeyPos_SF-event-kbd'
+barcode_scanner_src ='/dev/input/by-id/usb-SuperMax_Imaging_2208_CM221A8K0092-event-kbd'
 barcode_scanner_src ='/dev/input/by-id/usb-Newland_Computer_KeyPos_SF-event-kbd'
 
 # Label as image folder path.

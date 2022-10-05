@@ -18,14 +18,16 @@ def check_scale_conn():
         return False
 
 def check_scanner_conn():
-    scanner_device = usb.core.find(idVendor=0x1eab, idProduct=0x9310)
+    scanner_device = usb.core.find(idVendor=0x2dd6, idProduct=0x2141)
     if scanner_device != None:
         return True
     else:
         return False
 
 def check_printer_conn():
-    #if 410 then : printer_device = usb.core.find(idVendor=0x0a5f, idProduct=0x011c)
+    #if 410 then : 
+    # printer_device = usb.core.find(idVendor=0x0a5f, idProduct=0x011c)
+    # if 420 then:
     printer_device = usb.core.find(idVendor=0x0a5f, idProduct=0x0120)
     if printer_device != None:
         return True
@@ -101,3 +103,4 @@ class FairbanksScaleReader(Thread):
 def init():
     reader = FairbanksScaleReader()
     reader.start()
+
