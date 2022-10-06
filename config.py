@@ -18,10 +18,14 @@ buttons_pad_src = '/dev/input/by-id/usb-DragonRise_Inc._Generic_USB_Joystick-eve
 # Barcode scanner source path.
 # barcode_scanner_src ='/dev/input/by-id/usb-Newland_Computer_KeyPos_SF-event-kbd'
 BARCODE_CONFIG = [
-    {"src": "/dev/input/by-id/usb-SuperMax_Imaging_2208_CM221A8K0092-event-kbd",
-    "device": lambda: usb.core.find(idVendor=0x0a5f, idProduct=0x011c)
+    {
+        "src": "/dev/input/by-id/usb-SuperMax_Imaging_2208_CM221A8K0092-event-kbd",
+        "device": lambda: usb.core.find(idVendor=0x2dd6, idProduct=0x2141)
     },
-    {"src": "/dev/input/by-id/usb-Newland_Computer_KeyPos_SF-event-kbd"},
+    {
+        "src": "/dev/input/by-id/usb-Newland_Computer_KeyPos_SF-event-kbd",
+        "device": lambda: usb.core.find(idVendor=0x2dd6, idProduct=0x2141)
+    }
 ]
 
 # Label as image folder path.

@@ -4,11 +4,11 @@ from config import BARCODE_CONFIG
 
 
 def check_scanner_conn():
-    scanner_device = usb.core.find(idVendor=0x1eab, idProduct=0x9310)
-    if scanner_device is not None:
-        return True
-    else:
-        return False
+    for barcode_config in BARCODE_CONFIG:
+        code_scanner = barcode_config["device"]()
+        if code_scanner is not None:
+            return True        
+    return False
 
 
 def get_scanner_device():
