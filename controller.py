@@ -1,6 +1,6 @@
 from evdev import InputDevice, categorize, ecodes
 from printer import send_to_printer, conn
-from fairbanks_scale import init_scale, current, check_scale_conn
+from fairbanks_scale import current, check_scale_conn
 from scanner import get_scanner_device
 from label import generate_label
 from utils import custom_upper
@@ -13,7 +13,7 @@ from config import (
     img_folder
 )
 from printer import get_printer_status
-import os
+import os, time
 import requests
 
 unique_id = ""
@@ -69,42 +69,49 @@ KEY_ENTER = 28
 class CodeScanner(Thread):
     def __init__(self):
         Thread.__init__(self)
-        self.code_scanner = get_scanner_device()
+        self.code_scanner = None                      
 
     def run(self):
-        global input_code, scanned_code, keys, unique_id
-        to_upper_case = False
-        for event in self.code_scanner.read_loop():
-            if event.type == ecodes.EV_KEY:
-                data = categorize(event)
-                if data.scancode == LEFT_SHIFT:
-                    to_upper_case = True
-                    continue
+        # we check forever conections and disconections from the Scanner
+        while True:
+            self.code_scanner = get_scanner_device()  
+            if self.code_scanner is None:
+                print("CodeScanner:run:No scanner I'll try again in 5 seconds:")
+                time.sleep(5)
+                continue
 
-                if data.keystate != KEY_UP:
-                    continue
+            global input_code, scanned_code, keys, unique_id
+            to_upper_case = False
+            print("CodeScanner:run:code_scanner:", self.code_scanner)
+            try:
+                for event in self.code_scanner.read_loop():                    
+                    if event.type == ecodes.EV_KEY:
+                        data = categorize(event)
+                        if data.scancode == LEFT_SHIFT:
+                            to_upper_case = True
+                            continue
 
-                # Each event is 1 character, have to store all events until code 28 which is enter/done.
-                # Store entire scan in global variable and reset the input.
-                if data.scancode == KEY_ENTER:
-                    scanned_code = input_code
-                    print("scanned_code:", scanned_code)
-                    unique_id = str(uuid.uuid4())
-                    input_code = ""
-                else:
-                    print(data.scancode, data.keycode, data.scancode in KEY_MAPPING)
-                    if data.keycode in KEY_MAPPING:
-                        if to_upper_case:
-                            input_code += custom_upper(KEY_MAPPING[data.keycode])
-                            to_upper_case = False
-                        else:
-                            input_code += KEY_MAPPING[data.keycode]
+                        if data.keystate != KEY_UP:
+                            continue
+
+                        # Each event is 1 character, have to store all events until code 28 which is enter/done.
+                        # Store entire scan in global variable and reset the input.
+                        if data.scancode == KEY_ENTER:
+                            scanned_code = input_code                    
+                            unique_id = str(uuid.uuid4())
+                            input_code = ""
+                        else:                
+                            if data.keycode in KEY_MAPPING:
+                                if to_upper_case:
+                                    input_code += custom_upper(KEY_MAPPING[data.keycode])
+                                    to_upper_case = False
+                                else:
+                                    input_code += KEY_MAPPING[data.keycode]
+            except OSError:
+                self.code_scanner = None
+                print("CodeScanner:run:Scanner offline")
 
 
-def init_scanner():
-    reader2 = CodeScanner()
-    reader2.start()
-    init_scale()
 
 
 class ButtonsReader(Thread):
@@ -175,7 +182,7 @@ class ButtonsReader(Thread):
         print("REQUEST DATA", request_data)
         try:
             x = requests.post(url, data=request_data)
-            print(x.text)
+            print("ButonReader:send_url_request:", x.text)
         except requests.exceptions.RequestException as e:  # This is the correct syntax
             print("API request: Something goes wrong", e)
         scanned_code = ""
@@ -184,12 +191,11 @@ class ButtonsReader(Thread):
     def run(self):
         global pause
         # evdev takes care of polling the controller in a loop
-        for event in self.buttons_pad.read_loop():
-            # print(categorize(event))
+        for event in self.buttons_pad.read_loop():            
             # filters by event type
             if event.type == ecodes.EV_KEY:
                 if event.value == 1:
-                    print(event)
+                    print("ButtonReader:run:event:",event)
                     if event.code == self.blue_btn and not pause:
                         if conn.getJobs() == {}:
                             print("Let's print label")
@@ -206,26 +212,17 @@ class ButtonsReader(Thread):
                             print("Printer is busy")
                     if event.code == self.yellow_btn and not pause:
                         print("Let's start a new lot")
-                        self.start_new_lot()
-                        #   print(event)
+                        self.start_new_lot()                        
                     if event.code == self.red_btn:
                         if (pause):
                             print("CONTINUE")
                         else:
                             print("PAUSE")
-                        self.set_pause()
-                        # print(event)
+                        self.set_pause()                        
                     if event.code == self.green_btn and not pause:
                         print("Green Btn pressed")
                         if self.last_label != '':
                             route = img_folder + self.last_label
-                            send_to_printer(route)
-                            # print(current())
+                            send_to_printer(route)                            
                     if event.code == self.white_btn and not pause:
                         self.send_print_helper(str(0.5))
-
-
-def init_buttons():
-    reader = ButtonsReader()
-    reader.start()
-    # init_scale()

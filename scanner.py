@@ -3,7 +3,7 @@ import usb.core
 from config import BARCODE_CONFIG
 
 
-def check_scanner_conn():
+def check_scanner_conn():    
     for barcode_config in BARCODE_CONFIG:
         code_scanner = barcode_config["device"]()
         if code_scanner is not None:
@@ -13,7 +13,10 @@ def check_scanner_conn():
 
 def get_scanner_device():
     for barcode_config in BARCODE_CONFIG:
-        code_scanner = InputDevice(barcode_config["src"])
+        try:
+            code_scanner = InputDevice(barcode_config["src"])
+        except FileNotFoundError:
+            continue
         if code_scanner:
             return code_scanner
     return None

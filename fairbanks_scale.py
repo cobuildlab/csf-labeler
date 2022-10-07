@@ -82,8 +82,3 @@ class FairbanksScaleReader(Thread):
                 data = None
                 if e.args == ('Operation timed out',):
                     continue
-
-def init_scale():
-    reader = FairbanksScaleReader()
-    reader.start()
-
