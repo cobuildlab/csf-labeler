@@ -22,7 +22,7 @@ class ScreenLayout(Widget):
         self.scanner = scanner
 
     def update_data(self):
-        is_scanner_online = self.scanner.code_scanner is not None        
+        is_scanner_online = self.scanner.code_scanner is not None
         is_everything_ok = is_printer_ready() and is_scanner_online
         self.ids.datetime_label.text = f'[i]{str(get_date())}  {str(get_time())}[/i]'
         self.ids.temp_label.text = f'[i]{int(CPUTemperature().temperature)}C[/i]'
@@ -48,15 +48,13 @@ class CSFApp(App):
         return self.screen
 
 
-
-
 buttons = ButtonsReader()
-buttons.start()  
+buttons.start()
 
-scanner = CodeScanner()
-scanner.start()
+scanner_controller = CodeScanner()
+scanner_controller.start()
 
 scale = FairbanksScaleReader()
 scale.start()
 
-CSFApp(scanner).run()
+CSFApp(scanner_controller).run()
