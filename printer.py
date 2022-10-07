@@ -4,13 +4,6 @@ from typing import Optional
 
 conn = cups.Connection()
 
-def check_printer_conn():
-    for printer_config in PRINTERS_CONFIG:
-        printer_device = printer_config["device"]()
-        if printer_device is not None:
-            return True
-    return False
-
 def __get_printer_info():
     printers = conn.getPrinters()
     for printer_config in PRINTERS_CONFIG:
@@ -22,16 +15,12 @@ def __get_printer_info():
             return printer_name, device_uri, state, serial
     return "", "","",""
 
-print(PRINTERS_CONFIG)
-print(__get_printer_info())
-print(check_printer_conn())
-
 def get_printer_serial()-> Optional[str]:
     return __get_printer_info()[3]
 
-def get_printer_status()-> Optional[bool]:
+def is_printer_ready()-> Optional[bool]:
     printer_status = __get_printer_info()[2]
-    if printer_status == 3 and check_printer_conn():
+    if printer_status == 3:
         return True
     else:
         return False

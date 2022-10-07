@@ -12,7 +12,6 @@ from config import (
     buttons_pad_src,
     img_folder
 )
-from printer import get_printer_status
 import os, time
 import requests
 
@@ -48,16 +47,6 @@ def get_day_lot() -> Optional[str]:
 def get_count() -> Optional[str]:
     global count
     return count
-
-
-def system_status():
-    global pause
-    if get_printer_status() and check_scale_conn():
-        pause = False
-        return True
-    else:
-        pause = True
-        return False
 
 
 KEY_UP = 0
