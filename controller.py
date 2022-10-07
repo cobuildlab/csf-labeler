@@ -18,7 +18,6 @@ import requests
 unique_id = ""
 day_lot = None
 count = None
-pause = False
 scanned_code = ""
 input_code = ""
 
@@ -58,12 +57,12 @@ KEY_ENTER = 28
 class CodeScanner(Thread):
     def __init__(self):
         Thread.__init__(self)
-        self.code_scanner = None                      
+        self.code_scanner = None
 
     def run(self):
         # we check forever conections and disconections from the Scanner
         while True:
-            self.code_scanner = get_scanner_device()  
+            self.code_scanner = get_scanner_device()
             if self.code_scanner is None:
                 print("CodeScanner:run:No scanner I'll try again in 5 seconds:")
                 time.sleep(5)
@@ -73,7 +72,7 @@ class CodeScanner(Thread):
             to_upper_case = False
             print("CodeScanner:run:code_scanner:", self.code_scanner)
             try:
-                for event in self.code_scanner.read_loop():                    
+                for event in self.code_scanner.read_loop():
                     if event.type == ecodes.EV_KEY:
                         data = categorize(event)
                         if data.scancode == LEFT_SHIFT:
@@ -86,10 +85,10 @@ class CodeScanner(Thread):
                         # Each event is 1 character, have to store all events until code 28 which is enter/done.
                         # Store entire scan in global variable and reset the input.
                         if data.scancode == KEY_ENTER:
-                            scanned_code = input_code                    
+                            scanned_code = input_code
                             unique_id = str(uuid.uuid4())
                             input_code = ""
-                        else:                
+                        else:
                             if data.keycode in KEY_MAPPING:
                                 if to_upper_case:
                                     input_code += custom_upper(KEY_MAPPING[data.keycode])
@@ -99,8 +98,6 @@ class CodeScanner(Thread):
             except OSError:
                 self.code_scanner = None
                 print("CodeScanner:run:Scanner offline")
-
-
 
 
 class ButtonsReader(Thread):
@@ -145,10 +142,6 @@ class ButtonsReader(Thread):
         day_lot = day_lot + 1
         count = 0
 
-    def set_pause(self):
-        global pause
-        pause = not pause
-
     def send_print_helper(self, rounded_weight):
         global day_lot, count, unique_id, scanned_code
         count = count + 1
@@ -178,14 +171,13 @@ class ButtonsReader(Thread):
         unique_id = ""
 
     def run(self):
-        global pause
         # evdev takes care of polling the controller in a loop
-        for event in self.buttons_pad.read_loop():            
+        for event in self.buttons_pad.read_loop():
             # filters by event type
             if event.type == ecodes.EV_KEY:
                 if event.value == 1:
-                    print("ButtonReader:run:event:",event)
-                    if event.code == self.blue_btn and not pause:
+                    print("ButtonReader:run:event:", event)
+                    if event.code == self.blue_btn:
                         if conn.getJobs() == {}:
                             print("Let's print label")
                             weight = current()
@@ -199,19 +191,13 @@ class ButtonsReader(Thread):
                                 # print(event)
                         else:
                             print("Printer is busy")
-                    if event.code == self.yellow_btn and not pause:
+                    if event.code == self.yellow_btn:
                         print("Let's start a new lot")
-                        self.start_new_lot()                        
-                    if event.code == self.red_btn:
-                        if (pause):
-                            print("CONTINUE")
-                        else:
-                            print("PAUSE")
-                        self.set_pause()                        
-                    if event.code == self.green_btn and not pause:
+                        self.start_new_lot()
+                    if event.code == self.green_btn:
                         print("Green Btn pressed")
                         if self.last_label != '':
                             route = img_folder + self.last_label
-                            send_to_printer(route)                            
-                    if event.code == self.white_btn and not pause:
+                            send_to_printer(route)
+                    if event.code == self.white_btn:
                         self.send_print_helper(str(0.5))
