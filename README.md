@@ -10,11 +10,13 @@ INSTRUCTIONS FOR INSTALLING THE MODULE
 * Turn off Bluetooth
 * In the Power Settings, set the screen to never turn off
 * On the Software Updates, disable the updates entirely, this prevents the UPDATE YOUR SYSTEM dialog that blocks the screen whe you have updates to install
-* Install the updates
-* Install `git`
 
-2.  Clone the repo from https://github.com/cobuildlab/csf-labeler.git
-3.  Tun the `start.sh` script on the computer
+2. Clone the repo from `https://github.com/cobuildlab/csf-labeler.git` into `/home/cobuild`
+3. Run the `setup.sh` for:
+  - Install OS dependencies
+  - Install Python3 dependencies
+  - Install Kivy
+
 4.  Set up the Zebra printers on the CUPS configuration
 5.  Copy the /etc/labeler.conf file in /etc/supervisor/conf.d/ folder
-6.  You are good to go!
+6.  Reboot, to test that everything is working 
