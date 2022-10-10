@@ -60,7 +60,7 @@ class CodeScanner(Thread):
         self.code_scanner = None
 
     def run(self):
-        # we check forever conections and disconections from the Scanner
+        # we check forever connections and disconnections from the Scanner
         while True:
             self.code_scanner = get_scanner_device()
             if self.code_scanner is None:
@@ -73,6 +73,7 @@ class CodeScanner(Thread):
             print("CodeScanner:run:code_scanner:", self.code_scanner)
             try:
                 for event in self.code_scanner.read_loop():
+                    raise Exception("this is a test")
                     if event.type == ecodes.EV_KEY:
                         data = categorize(event)
                         if data.scancode == LEFT_SHIFT:
