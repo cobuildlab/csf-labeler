@@ -171,33 +171,39 @@ class ButtonsReader(Thread):
         unique_id = ""
 
     def run(self):
-        # evdev takes care of polling the controller in a loop
-        for event in self.buttons_pad.read_loop():
-            # filters by event type
-            if event.type == ecodes.EV_KEY:
-                if event.value == 1:
-                    print("ButtonReader:run:event:", event)
-                    if event.code == self.blue_btn:
-                        if conn.getJobs() == {}:
-                            print("Let's print label")
-                            weight = current()
-                            if weight != None and float(weight) > 0:
-                                if float(weight) <= 0.50:
-                                    self.send_print_helper(str(0.5))
-                                    self.send_url_request()
+        while True:
+            try:
+                # evdev takes care of polling the controller in a loop
+                for event in self.buttons_pad.read_loop():
+                    # filters by event type
+                    if event.type == ecodes.EV_KEY:
+                        if event.value == 1:
+                            print("ButtonReader:run:event:", event)
+                            if event.code == self.blue_btn:
+                                if conn.getJobs() == {}:
+                                    print("Let's print label")
+                                    weight = current()
+                                    if weight is not None and float(weight) > 0:
+                                        if float(weight) <= 0.50:
+                                            self.send_print_helper(str(0.5))
+                                            self.send_url_request()
+                                        else:
+                                            self.send_print_helper(ceil(float(format(float(weight), ".2f"))))
+                                            self.send_url_request()
+                                        # print(event)
                                 else:
-                                    self.send_print_helper(ceil(float(format(float(weight), ".2f"))))
-                                    self.send_url_request()
-                                # print(event)
-                        else:
-                            print("Printer is busy")
-                    if event.code == self.yellow_btn:
-                        print("Let's start a new lot")
-                        self.start_new_lot()
-                    if event.code == self.green_btn:
-                        print("Green Btn pressed")
-                        if self.last_label != '':
-                            route = img_folder + self.last_label
-                            send_to_printer(route)
-                    if event.code == self.white_btn:
-                        self.send_print_helper(str(0.5))
+                                    print("Printer is busy")
+                            if event.code == self.yellow_btn:
+                                print("Let's start a new lot")
+                                self.start_new_lot()
+                            if event.code == self.green_btn:
+                                print("Green Btn pressed")
+                                if self.last_label != '':
+                                    route = img_folder + self.last_label
+                                    send_to_printer(route)
+                            if event.code == self.white_btn:
+                                self.send_print_helper(str(0.5))
+            except Exception as e:
+                print("controller.py:ButtonsReader:error: For some reason the buttons failed")
+                print("controller.py:ButtonsReader:error: But we will try again, I promise:")
+                print("controller.py:ButtonsReader:error:", e)
