@@ -18,5 +18,10 @@ INSTRUCTIONS FOR INSTALLING THE MODULE
   - Install Kivy
 
 4.  Set up the Zebra printers on the CUPS configuration
-5.  Copy the /etc/labeler.conf file in /etc/supervisor/conf.d/ folder
+  - Go to http://localhost:631/admin
+  - Add the Zebra Printer. CUPS will recognize the Zebra printer for you
+  - On the model, choose ZPL model
+  - On the label size, choose 2.25x1.25"
+
+5. Copy the /etc/labeler.conf file in /etc/supervisor/conf.d/ folder
 6.  Reboot, to test that everything is working 
