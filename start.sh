@@ -6,4 +6,5 @@ cd /home/cobuild/csf-labeler
 pwd
 git reset --hard
 git pull origin main
-gnome-terminal --window-with-profile=csf -- python3 /home/cobuild/csf-labeler/app.py -f
+#gnome-terminal --window-with-profile=csf -- python3 /home/cobuild/csf-labeler/app.py -f
+python3 app.py
