@@ -3,6 +3,8 @@ from config import PRINTERS_CONFIG
 from typing import Optional
 
 conn = cups.Connection()
+print("printer.py:conn.getJobs:", conn.getJobs())
+conn.cancelAllJobs()
 
 
 def __get_printer_info():
@@ -33,9 +35,9 @@ def send_to_printer(filename):
     try:
         conn.cancelAllJobs()
     except Exception as e:
-        print("printer.py:send_to_printer:cancelAllJobs")
+        print("printer.py:send_to_printer:cancelAllJobs:", e)
 
     try:
         conn.printFile(__get_printer_info()[0], filename, "Printing " + filename, {})
     except ValueError as e:
-        print("It seems that the printer is OFF", e)
+        print("printer.py:send_to_printer:printFile:error:It seems that the printer is OFF", e)
