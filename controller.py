@@ -180,19 +180,15 @@ class ButtonsReader(Thread):
                         if event.value == 1:
                             print("ButtonReader:run:event:", event)
                             if event.code == self.blue_btn:
-                                if conn.getJobs() == {}:
-                                    print("Let's print label")
-                                    weight = current()
-                                    if weight is not None and float(weight) > 0:
-                                        if float(weight) <= 0.50:
-                                            self.send_print_helper(str(0.5))
-                                            self.send_url_request()
-                                        else:
-                                            self.send_print_helper(ceil(float(format(float(weight), ".2f"))))
-                                            self.send_url_request()
-                                        # print(event)
-                                else:
-                                    print("Printer is busy")
+                                print("controller.py:ButtonsReader:run:Let's print label")
+                                weight = current()
+                                if weight is not None and float(weight) > 0:
+                                    if float(weight) <= 0.50:
+                                        self.send_print_helper(str(0.5))
+                                        self.send_url_request()
+                                    else:
+                                        self.send_print_helper(ceil(float(format(float(weight), ".2f"))))
+                                        self.send_url_request()
                             if event.code == self.yellow_btn:
                                 print("Let's start a new lot")
                                 self.start_new_lot()
