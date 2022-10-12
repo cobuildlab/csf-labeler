@@ -4,7 +4,6 @@ from typing import Optional
 
 conn = cups.Connection()
 print("printer.py:conn.getJobs:", conn.getJobs())
-conn.cancelAllJobs()
 
 
 def __get_printer_info():
@@ -32,12 +31,13 @@ def is_printer_ready() -> Optional[bool]:
 
 
 def send_to_printer(filename):
+    printer_name = __get_printer_info()[0]
     try:
-        conn.cancelAllJobs()
+        conn.cancelAllJobs(printer_name)
     except Exception as e:
         print("printer.py:send_to_printer:cancelAllJobs:", e)
 
     try:
-        conn.printFile(__get_printer_info()[0], filename, "Printing " + filename, {})
+        conn.printFile(printer_name, filename, "Printing " + filename, {})
     except ValueError as e:
         print("printer.py:send_to_printer:printFile:error:It seems that the printer is OFF", e)
