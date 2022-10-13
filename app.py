@@ -4,7 +4,8 @@ from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.clock import Clock
-from controller import ButtonsReader, CodeScanner, get_day_lot, get_count
+from controller import ButtonsReader, get_day_lot, get_count
+from scanner import CodeScanner
 from network import check_network_conn
 from fairbanks_scale import FairbanksScaleReader, current, check_scale_conn
 from printer import get_printer_serial, is_printer_ready
@@ -34,7 +35,6 @@ class ScreenLayout(Widget):
             count = str(get_count())
             day_lot = str(get_day_lot())
             printer_serial = str(get_printer_serial())
-
             self.ids.datetime_label.text = f'[i]{date}  {time}[/i]'
             self.ids.temp_label.text = f'[i]{cpu_temperature}C[/i]'
             self.ids.weight_label.text = f'[b]{str(current_weight)} lb[/b]'
@@ -64,7 +64,7 @@ class CSFApp(App):
         scale.start()
 
         screen = ScreenLayout(scanner_controller)
-        Clock.schedule_interval(lambda dt: screen.update_data(), 1.5)
+        Clock.schedule_interval(lambda dt: screen.update_data(), 0.5)
         return screen
 
 
