@@ -24,7 +24,7 @@ text_3 = int(text_4 - vertical_padding - normal_fnt_size)
 text_7 = int(text_3 - vertical_padding - normal_fnt_size)
 draw_2 = int(text_7 - 10 - normal_fnt_size)
 
-# Font types inicialitation.
+# Font types initialization.
 header_fnt = ImageFont.truetype(fnt_src, size=header_fnt_size)
 body_fnt = ImageFont.truetype(fnt_src, size=normal_fnt_size)
 serial_fnt = ImageFont.truetype(fnt_src, size=serial_fnt_size)
