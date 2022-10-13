@@ -1,7 +1,7 @@
 from evdev import InputDevice, categorize, ecodes
 
 from network import RequestSender
-from printer import send_to_printer, Printer
+from printer import send_to_printer
 from label import generate_label
 from threading import Thread
 from math import ceil
@@ -56,8 +56,8 @@ class ButtonsReader(Thread):
         print("ButtonsReader:send_print_helper:label_path:", label_path)
         # route = img_folder + label
         # self.update_last_label(label_path)
-        # send_to_printer(label_path)
-        Printer(label_path).start()
+        send_to_printer(label_path)
+        # Printer(label_path).start()
         print("ButtonsReader:send_print_helper:Printer:sent")
 
     def send_url_request(self, weight_str, unique_id):

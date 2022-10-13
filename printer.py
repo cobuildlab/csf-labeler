@@ -45,7 +45,7 @@ def is_printer_ready() -> Optional[bool]:
 def send_to_printer(filename):
     name = get_printer_info()["name"]
     try:
-        # conn.cancelAllJobs(name)
+        conn.cancelAllJobs(name)
         print("printer.py:send_to_printer:cancelAllJobs")
     except Exception as e:
         print("printer.py:send_to_printer:cancelAllJobs:", e)
@@ -59,6 +59,7 @@ def send_to_printer(filename):
         print("printer.py:send_to_printer:printFile:error:It seems that the printer is OFF", e)
 
 
+# TODO: We need a local queue to moderate printer communication
 class Printer(Thread):
     def __init__(self, filename):
         Thread.__init__(self, name="Printer")
