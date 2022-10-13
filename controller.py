@@ -15,13 +15,11 @@ from config import (
 import os, time
 import requests
 
-unique_id = ""
 day_lot = None
 count = None
-scanned_code = ""
-input_code = ""
 
-# usb barcode scanner will match characters in this array based off keycode to verify correct string output due to different encoding
+# usb barcode scanner will match characters in this array based off keycode to verify correct
+# string output due to different encoding
 KEY_MAPPING = {'KEY_EQUAL': '+', 'KEY_SLASH': '/', 'KEY_SPACE': ' ', 'KEY_DOT': '.', 'KEY_MINUS': '-', 'KEY_Q': 'q',
                'KEY_W': 'w', 'KEY_E': 'e', 'KEY_R': 'r',
                'KEY_T': 't', 'KEY_Y': 'y',
@@ -31,11 +29,6 @@ KEY_MAPPING = {'KEY_EQUAL': '+', 'KEY_SLASH': '/', 'KEY_SPACE': ' ', 'KEY_DOT': 
                'KEY_B': 'b', 'KEY_N': 'n', 'KEY_M': 'm',
                'KEY_1': '1', 'KEY_2': '2', 'KEY_3': '3', 'KEY_4': '4', 'KEY_5': '5', 'KEY_6': '6', 'KEY_7': '7',
                'KEY_8': '8', 'KEY_9': '9', 'KEY_0': '0'}
-
-
-def code() -> Optional[str]:
-    global scanned_code
-    return scanned_code[-12:]
 
 
 def get_day_lot() -> Optional[str]:
@@ -58,6 +51,10 @@ class CodeScanner(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.code_scanner = None
+        self.scanned_code = ""
+
+    def reset(self):
+        self.scanned_code = ""
 
     def run(self):
         # we check forever connections and disconnections from the Scanner
@@ -68,8 +65,8 @@ class CodeScanner(Thread):
                 time.sleep(5)
                 continue
 
-            global input_code, scanned_code, keys, unique_id
             to_upper_case = False
+            input_code = ""
             print("CodeScanner:run:code_scanner:", self.code_scanner)
             try:
                 for event in self.code_scanner.read_loop():
@@ -85,8 +82,7 @@ class CodeScanner(Thread):
                         # Each event is 1 character, have to store all events until code 28 which is enter/done.
                         # Store entire scan in global variable and reset the input.
                         if data.scancode == KEY_ENTER:
-                            scanned_code = input_code
-                            unique_id = str(uuid.uuid4())
+                            self.scanned_code = input_code
                             input_code = ""
                         else:
                             if data.keycode in KEY_MAPPING:
@@ -101,8 +97,9 @@ class CodeScanner(Thread):
 
 
 class ButtonsReader(Thread):
-    def __init__(self):
+    def __init__(self, scanner_controller: CodeScanner):
         Thread.__init__(self)
+        self.scanner_controller = scanner_controller
         global day_lot, count
         print("We started to read buttons values")
 
@@ -131,9 +128,9 @@ class ButtonsReader(Thread):
 
     def update_last_label(self, label):
         if self.last_label != '':
-            myfile = img_folder + self.last_label
-            if os.path.isfile(myfile):
-                os.remove(myfile)
+            my_file = img_folder + self.last_label
+            if os.path.isfile(my_file):
+                os.remove(my_file)
         self.last_label = label
 
     # Start new lot and count
@@ -142,33 +139,34 @@ class ButtonsReader(Thread):
         day_lot = day_lot + 1
         count = 0
 
-    def send_print_helper(self, rounded_weight):
-        global day_lot, count, unique_id, scanned_code
+    def send_print_helper(self, rounded_weight, unique_id):
+        global day_lot, count
         count = count + 1
-        print("this is unique_uuid: ", unique_id)
-        label = generate_label(day_lot, count, str(rounded_weight), scanned_code, unique_id)
+        print("ButtonsReader:send_print_helper:", unique_id)
+        label = generate_label(day_lot, count, str(rounded_weight), self.scanner_controller.scanned_code, unique_id)
         route = img_folder + label
         self.update_last_label(label)
         send_to_printer(route)
 
-    def send_url_request(self):
-        global scanned_code, unique_id
+    def send_url_request(self, unique_id):
+        if not self.scanner_controller.scanned_code:
+            return
+
         weight = current()
         if float(weight) <= 0.50:
             round_weight = str(0.5)
         else:
             round_weight = (ceil(float(format(float(weight), ".2f"))))
         url = "https://csfcouriersltd.com/ws/weighted_package"
-        request_data = {"receipt_number": scanned_code, "packageId": unique_id, "weight": round_weight,
+        request_data = {"receipt_number": self.scanner_controller.scanned_code, "packageId": unique_id,
+                        "weight": round_weight,
                         "username": "csfcourierltd", "password": "6Ld9y1saAAAAAFY5xdTG3bCjZ7jCnfhqztPdXKUL"}
         print("REQUEST DATA", request_data)
         try:
             x = requests.post(url, data=request_data)
-            print("ButonReader:send_url_request:", x.text)
+            print("ButtonReader:send_url_request:", x.text)
         except requests.exceptions.RequestException as e:  # This is the correct syntax
             print("API request: Something goes wrong", e)
-        scanned_code = ""
-        unique_id = ""
 
     def run(self):
         while True:
@@ -181,14 +179,18 @@ class ButtonsReader(Thread):
                             print("ButtonReader:run:event:", event)
                             if event.code == self.blue_btn:
                                 print("controller.py:ButtonsReader:run:Let's print label")
+                                unique_id = str(uuid.uuid4())
                                 weight = current()
                                 if weight is not None and float(weight) > 0:
+                                    weight_str = ""
                                     if float(weight) <= 0.50:
-                                        self.send_print_helper(str(0.5))
-                                        self.send_url_request()
+                                        weight_str = str(0.5)
                                     else:
-                                        self.send_print_helper(ceil(float(format(float(weight), ".2f"))))
-                                        self.send_url_request()
+                                        weight_str = ceil(float(format(float(weight), ".2f")))
+
+                                    self.send_print_helper(weight_str, unique_id)
+                                    self.send_url_request(unique_id)
+                                    self.scanner_controller.reset()
                             if event.code == self.yellow_btn:
                                 print("Let's start a new lot")
                                 self.start_new_lot()

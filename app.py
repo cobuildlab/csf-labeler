@@ -4,7 +4,7 @@ from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.clock import Clock
-from controller import ButtonsReader, CodeScanner, code, get_day_lot, get_count
+from controller import ButtonsReader, CodeScanner, get_day_lot, get_count
 from network import check_network_conn
 from fairbanks_scale import FairbanksScaleReader, current, check_scale_conn
 from printer import get_printer_serial, is_printer_ready
@@ -17,17 +17,17 @@ previous_code = None
 
 
 class ScreenLayout(Widget):
-    def __init__(self, scanner):
+    def __init__(self, scanner_controller:CodeScanner):
         Widget.__init__(self)
-        self.scanner = scanner
+        self.scanner_controller = scanner_controller
 
     def update_data(self):
-        is_scanner_online = self.scanner.code_scanner is not None
+        is_scanner_online = self.scanner_controller.code_scanner is not None
         is_everything_ok = is_printer_ready() and is_scanner_online
         self.ids.datetime_label.text = f'[i]{str(get_date())}  {str(get_time())}[/i]'
         self.ids.temp_label.text = f'[i]{int(CPUTemperature().temperature)}C[/i]'
         self.ids.weight_label.text = f'[b]{str(current())} lb[/b]'
-        self.ids.barcode_label.text = f'[b]{str(code())}[/b]'
+        self.ids.barcode_label.text = f'[b]{str(self.scanner_controller.scanned_code)}[/b]'
         self.ids.status_label.text = "[b][color=#00ff00]READY[/color][/b]" if is_everything_ok else "[b][color=#ff0000]Error[/color][/b]"
         self.ids.count_label_value.text = f'[b]{str(get_count())}[/b]'
         self.ids.serie_label_value.text = f'[b]{str(get_day_lot())}[/b]'
@@ -40,14 +40,15 @@ class ScreenLayout(Widget):
 
 class CSFApp(App):
     def build(self):
-        buttons = ButtonsReader()
-        buttons.start()
-
         scanner_controller = CodeScanner()
         scanner_controller.start()
 
+        buttons_controller = ButtonsReader(scanner_controller)
+        buttons_controller.start()
+
         scale = FairbanksScaleReader()
         scale.start()
+
         screen = ScreenLayout(scanner_controller)
         Clock.schedule_interval(lambda dt: screen.update_data(), 1.5)
         return screen

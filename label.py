@@ -2,19 +2,19 @@ from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
 from qrcode import QRCode
 
-from config import (   img_folder,
-    fnt_src,
-    label_width_px,
-    label_length_px,
-    header_fnt_size,
-    normal_fnt_size,
-    serial_fnt_size,
-    vertical_padding,
-    middle
-)
+from config import (img_folder,
+                    fnt_src,
+                    label_width_px,
+                    label_length_px,
+                    header_fnt_size,
+                    normal_fnt_size,
+                    serial_fnt_size,
+                    vertical_padding,
+                    middle
+                    )
 
 # QR and text dynamic positions.
-text_1 = int(vertical_padding -5 + header_fnt_size)
+text_1 = int(vertical_padding - 5 + header_fnt_size)
 draw_1 = int(text_1 + vertical_padding - 5)
 text_6 = int(label_length_px - 10)
 text_5 = int(text_6 - vertical_padding - normal_fnt_size)
@@ -29,15 +29,23 @@ header_fnt = ImageFont.truetype(fnt_src, size=header_fnt_size)
 body_fnt = ImageFont.truetype(fnt_src, size=normal_fnt_size)
 serial_fnt = ImageFont.truetype(fnt_src, size=serial_fnt_size)
 
+
 # Utility functions to get date and time.
 def get_date():
     return datetime.today().strftime('%b/%d/%Y')
+
+
 def get_date_for_id():
     return datetime.today().strftime('%m/%d/%Y')
+
+
 def get_day_name():
     return datetime.today().strftime('%A')
+
+
 def get_time():
     return datetime.today().strftime('%I:%M:%S %p')
+
 
 # Main function to generate a label as an image.
 
@@ -47,7 +55,7 @@ def generate_label(lot, count, weight_str, barcode, unique_uuid):
     day_time = get_time()
     day_date_for_id = get_date_for_id()
 
-    uniq_id = day_date_for_id.replace('/','') + '-' + str(lot) + '-' + str(count)
+    uniq_id = day_date_for_id.replace('/', '') + '-' + str(lot) + '-' + str(count)
 
     img = Image.new('RGB', (label_width_px, label_length_px), color='white')
     draw = ImageDraw.Draw(img)
@@ -69,11 +77,11 @@ def generate_label(lot, count, weight_str, barcode, unique_uuid):
     draw.text((middle * 1.5, text_3), day_date, fill='black', anchor='ms', font=serial_fnt)
     draw.text((middle * 1.5, text_4), day_time, fill='black', anchor='ms', font=serial_fnt)
     draw.text((middle * 1.5, text_2), uniq_id, fill='black', anchor='ms', font=serial_fnt)
-    draw.text((middle * 1.5, text_5), barcode[-12:] if barcode else "No Barcode" , fill='black', anchor='ms', font=serial_fnt)
+    draw.text((middle * 1.5, text_5), barcode[-12:] if barcode else "No Barcode", fill='black', anchor='ms',
+              font=serial_fnt)
     draw.text((middle * 1.5, text_6), unique_uuid[-12:], fill='black', anchor='ms', font=serial_fnt)
 
     img_uniq_name = uniq_id + '.png'
     img.save(img_folder + img_uniq_name)
 
     return img_uniq_name
-

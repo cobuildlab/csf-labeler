@@ -6,9 +6,11 @@ from typing import Optional
 
 current_value = None
 
-def current()-> Optional[str]:
+
+def current() -> Optional[str]:
     global current_value
     return current_value
+
 
 def check_scale_conn():
     scale_device = usb.core.find(idVendor=0x0b67, idProduct=0x555e)
@@ -22,7 +24,6 @@ class FairbanksScaleReader(Thread):
     def run(self):
 
         print("We started to read values")
-
         # The number of times a number should be outputted by the scale
         # before being output to the user.  This is to allow the scale
         # to balance before output
@@ -38,7 +39,8 @@ class FairbanksScaleReader(Thread):
                         device.detach_kernel_driver(intf.bInterfaceNumber)
                     except usb.core.USBError as e:
                         sys.exit(
-                            "Could not detatch kernel driver from interface({0}): {1}".format(intf.bInterfaceNumber, str(e)))
+                            "Could not detatch kernel driver from interface({0}): {1}".format(intf.bInterfaceNumber,
+                                                                                              str(e)))
 
         endpoint = device[0][(0, 0)][0]
 
@@ -60,7 +62,7 @@ class FairbanksScaleReader(Thread):
                     current_value = None
                     continue
 
-                weight = float(data[4] + (data[5]*256)) / 100
+                weight = float(data[4] + (data[5] * 256)) / 100
                 weight_str = str(weight)
 
                 if weight == 0.0:  # The scale goes back to zero, so we rest everything
@@ -74,7 +76,7 @@ class FairbanksScaleReader(Thread):
                 else:
                     counts[weight_str] = counts[weight_str] + 1
 
-                if counts[weight_str] > BALANCE_THRESHOLD :
+                if counts[weight_str] > BALANCE_THRESHOLD:
                     current_value = weight_str
                     counts = {}
 
