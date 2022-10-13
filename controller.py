@@ -14,46 +14,26 @@ from config import (
 )
 import os
 
-day_lot = None
-count = None
-
-
-def get_day_lot() -> Optional[str]:
-    global day_lot
-    return day_lot
-
-
-def get_count() -> Optional[str]:
-    global count
-    return count
-
 
 class ButtonsReader(Thread):
     def __init__(self, scanner_controller):
         Thread.__init__(self, name="ButtonsReader")
         self.scanner_controller = scanner_controller
-        global day_lot, count
+        self.day_lot = 1
+        self.count = 0
         # creates object 'gamepad' to store the data
         # you can call it whatever you like
         self.buttons_pad = InputDevice(buttons_pad_src)
-
         # print label
         self.blue_btn = 288
-
         # start new count new lot
         self.yellow_btn = 290
-
         # pause machine
         self.red_btn = 298
-
         # re-print last label
         self.green_btn = 292
-
         # reset machine
         self.white_btn = 294
-
-        count = 0
-        day_lot = 1
         self.last_label = ''
 
     def update_last_label(self, label):
@@ -65,16 +45,14 @@ class ButtonsReader(Thread):
 
     # Start new lot and count
     def start_new_lot(self):
-        global day_lot, count
-        day_lot = day_lot + 1
-        count = 0
+        self.day_lot = self.day_lot + 1
+        self.count = 0
 
     def send_print_helper(self, rounded_weight, unique_id):
         print("ButtonsReader:send_print_helper")
-        global day_lot, count
-        count = count + 1
+        self.count = self.count + 1
         print("ButtonsReader:send_print_helper:unique_id:", unique_id)
-        label_path = generate_label(day_lot, count, str(rounded_weight), self.scanner_controller.scanned_code,
+        label_path = generate_label(self.day_lot, self.count, str(rounded_weight), self.scanner_controller.scanned_code,
                                     unique_id)
         print("ButtonsReader:send_print_helper:label_path:", label_path)
         # route = img_folder + label
