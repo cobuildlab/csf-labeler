@@ -35,8 +35,8 @@ def get_printer_serial() -> Optional[str]:
 
 
 def is_printer_ready() -> Optional[bool]:
-    printer_status = get_printer_info()["status"]
-    if printer_status == 3:
+    printer_state = get_printer_info()["state"]
+    if printer_state == 3:
         return True
     else:
         return False
