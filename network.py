@@ -14,7 +14,7 @@ def check_network_conn():
 
 class RequestSender(Thread):
     def __init__(self, unique_id, scanned_code, rounded_weight):
-        Thread.__init__(self)
+        Thread.__init__(self, name="RequestSender")
         self.unique_id = unique_id
         self.scanned_code = scanned_code
         self.rounded_weight = rounded_weight

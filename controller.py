@@ -51,7 +51,7 @@ KEY_ENTER = 28
 
 class CodeScanner(Thread):
     def __init__(self):
-        Thread.__init__(self)
+        Thread.__init__(self, name="CodeScanner")
         self.code_scanner = None
         self.scanned_code = ""
 
@@ -93,18 +93,16 @@ class CodeScanner(Thread):
                                     to_upper_case = False
                                 else:
                                     input_code += KEY_MAPPING[data.keycode]
-            except OSError:
+            except OSError as e:
+                print("CodeScanner:run:Scanner offline:error:", e)
                 self.code_scanner = None
-                print("CodeScanner:run:Scanner offline")
 
 
 class ButtonsReader(Thread):
     def __init__(self, scanner_controller: CodeScanner):
-        Thread.__init__(self)
+        Thread.__init__(self, name="ButtonsReader")
         self.scanner_controller = scanner_controller
         global day_lot, count
-        print("We started to read buttons values")
-
         # creates object 'gamepad' to store the data
         # you can call it whatever you like
         self.buttons_pad = InputDevice(buttons_pad_src)
@@ -183,7 +181,6 @@ class ButtonsReader(Thread):
                                 unique_id = str(uuid.uuid4())
                                 weight = current()
                                 if weight is not None and float(weight) > 0:
-                                    weight_str = ""
                                     if float(weight) <= 0.50:
                                         weight_str = str(0.5)
                                     else:
