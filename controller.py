@@ -6,7 +6,6 @@ from label import generate_label
 from threading import Thread
 from math import ceil
 import uuid
-from typing import Optional
 from config import (
     buttons_pad_src,
     img_folder
@@ -59,20 +58,15 @@ class ButtonsReader(Thread):
         # self.update_last_label(label_path)
         send_to_printer(label_path)
 
-    def send_url_request(self, unique_id):
+    def send_url_request(self, weight_str, unique_id):
         print("ButtonsReader:send_url_request")
         scanned_code = self.scanner_controller.scanned_code
         if not scanned_code:
             print("ButtonsReader:send_url_request:NO CODE, NO REQUEST")
             return
 
-        weight = current()
-        if float(weight) <= 0.50:
-            rounded_weight = str(0.5)
-        else:
-            rounded_weight = (ceil(float(format(float(weight), ".2f"))))
-        print("ButtonsReader:send_url_request:send_request:", unique_id, scanned_code, rounded_weight)
-        RequestSender(unique_id, scanned_code, rounded_weight).start()
+        print("ButtonsReader:send_url_request:send_request:", unique_id, scanned_code, weight_str)
+        RequestSender(unique_id, scanned_code, weight_str).start()
         print("ButtonsReader:send_url_request:sent:")
 
     def run(self):
@@ -95,7 +89,7 @@ class ButtonsReader(Thread):
                                         weight_str = ceil(float(format(float(weight), ".2f")))
 
                                     self.send_print_helper(weight_str, unique_id)
-                                    self.send_url_request(unique_id)
+                                    self.send_url_request(weight_str, unique_id)
                                     self.scanner_controller.reset()
                             if event.code == self.yellow_btn:
                                 print("Let's start a new lot")
