@@ -38,6 +38,8 @@ def send_to_printer(filename):
     except Exception as e:
         print("printer.py:send_to_printer:cancelAllJobs:", e)
 
+    print("printer.py:send_to_printer:printFile:printer_name:", printer_name)
+    print("printer.py:send_to_printer:printFile:filename:", filename)
     try:
         job_id = conn.printFile(printer_name, filename, "Printing " + filename, {})
         print("printer.py:send_to_printer:printFile:job_id:", job_id)
