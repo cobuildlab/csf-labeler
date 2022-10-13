@@ -39,8 +39,7 @@ class ScreenLayout(Widget):
 
 
 class CSFApp(App):
-    def __init__(self):
-        App.__init__(self)
+    def build(self):
         buttons = ButtonsReader()
         buttons.start()
 
@@ -49,15 +48,10 @@ class CSFApp(App):
 
         scale = FairbanksScaleReader()
         scale.start()
-        self.screen = ScreenLayout(scanner_controller)
-
-    def build(self):
-        Clock.schedule_interval(lambda dt: self.screen.update_data(), 1.5)
-        return self.screen
+        screen = ScreenLayout(scanner_controller)
+        Clock.schedule_interval(lambda dt: screen.update_data(), 1.5)
+        return screen
 
 
-while True:
-    try:
-        CSFApp().run()
-    except Exception as e:
-        print("app.py:error:", e)
+if __name__ == '__main__':
+    CSFApp().run()
