@@ -39,6 +39,7 @@ def send_to_printer(filename):
         print("printer.py:send_to_printer:cancelAllJobs:", e)
 
     try:
-        conn.printFile(printer_name, filename, "Printing " + filename, {})
+        job_id = conn.printFile(printer_name, filename, "Printing " + filename, {})
+        print("printer.py:send_to_printer:printFile:job_id:", job_id)
     except ValueError as e:
         print("printer.py:send_to_printer:printFile:error:It seems that the printer is OFF", e)

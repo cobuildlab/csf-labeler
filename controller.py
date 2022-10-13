@@ -158,12 +158,14 @@ class ButtonsReader(Thread):
 
         weight = current()
         if float(weight) <= 0.50:
-            round_weight = str(0.5)
+            rounded_weight = str(0.5)
         else:
-            round_weight = (ceil(float(format(float(weight), ".2f"))))
+            rounded_weight = (ceil(float(format(float(weight), ".2f"))))
+        print("ButtonsReader:send_url_request:rounded_weight:", rounded_weight)
         url = "https://csfcouriersltd.com/ws/weighted_package"
+        print("ButtonsReader:send_url_request:rounded_weight:url", url)
         request_data = {"receipt_number": self.scanner_controller.scanned_code, "packageId": unique_id,
-                        "weight": round_weight,
+                        "weight": rounded_weight,
                         "username": "csfcourierltd", "password": "6Ld9y1saAAAAAFY5xdTG3bCjZ7jCnfhqztPdXKUL"}
         print("ButtonsReader:send_url_request:request_data:", request_data)
         try:
