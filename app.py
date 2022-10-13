@@ -10,7 +10,6 @@ from network import check_network_conn
 from fairbanks_scale import FairbanksScaleReader, check_scale_conn
 from printer import get_printer_serial, is_printer_ready
 from label import get_date, get_time
-from gpiozero import CPUTemperature
 import traceback
 
 Window.fullscreen = "auto"
@@ -27,12 +26,19 @@ class ScreenLayout(Widget):
         self.scale_controller = scale_controller
 
     def update_data(self):
+        cpu_temperature = 0
+
+        try:
+            from gpiozero import CPUTemperature
+            cpu_temperature = int(CPUTemperature().temperature)
+        except Exception as e:
+            print("ScreenLayout:update_data:CPUTemperature:error:", e)
+
         try:
             is_scanner_online = self.scanner_controller.code_scanner is not None
             is_everything_ok = is_printer_ready() and is_scanner_online
             time = str(get_time())
             date = str(get_date())
-            cpu_temperature = int(CPUTemperature().temperature)
             current_weight = self.scale_controller.current_value
             scanned_code = self.scanner_controller.scanned_code
             count = str(self.buttons_controller.count)
