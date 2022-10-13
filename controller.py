@@ -1,6 +1,8 @@
 from evdev import InputDevice, categorize, ecodes
-from printer import send_to_printer, conn
-from fairbanks_scale import current, check_scale_conn
+
+from network import RequestSender
+from printer import send_to_printer
+from fairbanks_scale import current
 from scanner import get_scanner_device
 from label import generate_label
 from utils import custom_upper
@@ -12,8 +14,8 @@ from config import (
     buttons_pad_src,
     img_folder
 )
-import os, time
-import requests
+import os
+import time
 
 day_lot = None
 count = None
@@ -153,7 +155,9 @@ class ButtonsReader(Thread):
 
     def send_url_request(self, unique_id):
         print("ButtonsReader:send_url_request")
-        if not self.scanner_controller.scanned_code:
+        scanned_code = self.scanner_controller.scanned_code
+        if not scanned_code:
+            print("ButtonsReader:send_url_request:NO CODE, NO REQUEST")
             return
 
         weight = current()
@@ -161,18 +165,9 @@ class ButtonsReader(Thread):
             rounded_weight = str(0.5)
         else:
             rounded_weight = (ceil(float(format(float(weight), ".2f"))))
-        print("ButtonsReader:send_url_request:rounded_weight:", rounded_weight)
-        url = "https://csfcouriersltd.com/ws/weighted_package"
-        print("ButtonsReader:send_url_request:rounded_weight:url", url)
-        request_data = {"receipt_number": self.scanner_controller.scanned_code, "packageId": unique_id,
-                        "weight": rounded_weight,
-                        "username": "csfcourierltd", "password": "6Ld9y1saAAAAAFY5xdTG3bCjZ7jCnfhqztPdXKUL"}
-        print("ButtonsReader:send_url_request:request_data:", request_data)
-        try:
-            response = requests.post(url, data=request_data)
-            print("ButtonReader:send_url_request:response:", response.text)
-        except requests.exceptions.RequestException as e:  # This is the correct syntax
-            print("ButtonReader:send_url_request:error: Something goes wrong", e)
+        print("ButtonsReader:send_url_request:send_request:", unique_id, scanned_code, rounded_weight)
+        RequestSender(unique_id, scanned_code, rounded_weight).start()
+        print("ButtonsReader:send_url_request:sent:")
 
     def run(self):
         while True:
