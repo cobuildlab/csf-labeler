@@ -81,7 +81,8 @@ def generate_label(lot, count, weight_str, barcode, unique_uuid):
               font=serial_fnt)
     draw.text((middle * 1.5, text_6), unique_uuid[-12:], fill='black', anchor='ms', font=serial_fnt)
 
-    img_uniq_name = uniq_id + '.png'
-    img.save(img_folder + img_uniq_name)
+    label_name = 'label.png'
+    label_path = img_folder + label_name
+    img.save(label_path)
 
-    return img_uniq_name
+    return label_path

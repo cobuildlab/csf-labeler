@@ -34,6 +34,7 @@ def send_to_printer(filename):
     printer_name = __get_printer_info()[0]
     try:
         conn.cancelAllJobs(printer_name)
+        print("printer.py:send_to_printer:cancelAllJobs")
     except Exception as e:
         print("printer.py:send_to_printer:cancelAllJobs:", e)
 

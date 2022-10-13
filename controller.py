@@ -140,15 +140,19 @@ class ButtonsReader(Thread):
         count = 0
 
     def send_print_helper(self, rounded_weight, unique_id):
+        print("ButtonsReader:send_print_helper")
         global day_lot, count
         count = count + 1
-        print("ButtonsReader:send_print_helper:", unique_id)
-        label = generate_label(day_lot, count, str(rounded_weight), self.scanner_controller.scanned_code, unique_id)
-        route = img_folder + label
-        self.update_last_label(label)
-        send_to_printer(route)
+        print("ButtonsReader:send_print_helper:unique_id:", unique_id)
+        label_path = generate_label(day_lot, count, str(rounded_weight), self.scanner_controller.scanned_code,
+                                    unique_id)
+        print("ButtonsReader:send_print_helper:label_path:", label_path)
+        # route = img_folder + label
+        # self.update_last_label(label_path)
+        send_to_printer(label_path)
 
     def send_url_request(self, unique_id):
+        print("ButtonsReader:send_url_request")
         if not self.scanner_controller.scanned_code:
             return
 
@@ -161,12 +165,12 @@ class ButtonsReader(Thread):
         request_data = {"receipt_number": self.scanner_controller.scanned_code, "packageId": unique_id,
                         "weight": round_weight,
                         "username": "csfcourierltd", "password": "6Ld9y1saAAAAAFY5xdTG3bCjZ7jCnfhqztPdXKUL"}
-        print("REQUEST DATA", request_data)
+        print("ButtonsReader:send_url_request:request_data:", request_data)
         try:
-            x = requests.post(url, data=request_data)
-            print("ButtonReader:send_url_request:", x.text)
+            response = requests.post(url, data=request_data)
+            print("ButtonReader:send_url_request:response:", response.text)
         except requests.exceptions.RequestException as e:  # This is the correct syntax
-            print("API request: Something goes wrong", e)
+            print("ButtonReader:send_url_request:error: Something goes wrong", e)
 
     def run(self):
         while True:
@@ -178,7 +182,7 @@ class ButtonsReader(Thread):
                         if event.value == 1:
                             print("ButtonReader:run:event:", event)
                             if event.code == self.blue_btn:
-                                print("controller.py:ButtonsReader:run:Let's print label")
+                                print("controller.py:ButtonsReader:run:blue_btn")
                                 unique_id = str(uuid.uuid4())
                                 weight = current()
                                 if weight is not None and float(weight) > 0:
