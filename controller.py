@@ -2,7 +2,6 @@ from evdev import InputDevice, categorize, ecodes
 
 from network import RequestSender
 from printer import send_to_printer
-from fairbanks_scale import current
 from label import generate_label
 from threading import Thread
 from math import ceil
@@ -16,9 +15,10 @@ import os
 
 
 class ButtonsReader(Thread):
-    def __init__(self, scanner_controller):
+    def __init__(self, scanner_controller, scale_controller):
         Thread.__init__(self, name="ButtonsReader")
         self.scanner_controller = scanner_controller
+        self.scale_controller = scale_controller
         self.day_lot = 1
         self.count = 0
         # creates object 'gamepad' to store the data
@@ -87,7 +87,7 @@ class ButtonsReader(Thread):
                             if event.code == self.blue_btn:
                                 print("controller.py:ButtonsReader:run:blue_btn")
                                 unique_id = str(uuid.uuid4())
-                                weight = current()
+                                weight = self.scale_controller.current_value
                                 if weight is not None and float(weight) > 0:
                                     if float(weight) <= 0.50:
                                         weight_str = str(0.5)

@@ -60,11 +60,11 @@ class CSFApp(App):
         scanner_controller = CodeScanner()
         scanner_controller.start()
 
-        buttons_controller = ButtonsReader(scanner_controller)
-        buttons_controller.start()
-
         scale_controller = FairbanksScaleReader()
         scale_controller.start()
+
+        buttons_controller = ButtonsReader(scanner_controller, scale_controller)
+        buttons_controller.start()
 
         screen = ScreenLayout(scanner_controller, buttons_controller, scale_controller)
         Clock.schedule_interval(lambda dt: screen.update_data(), 0.5)
