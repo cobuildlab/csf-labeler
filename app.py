@@ -10,6 +10,7 @@ from fairbanks_scale import FairbanksScaleReader, current, check_scale_conn
 from printer import get_printer_serial, is_printer_ready
 from label import get_date, get_time
 from gpiozero import CPUTemperature
+import traceback
 
 Window.fullscreen = "auto"
 Builder.load_file(os.path.join('assets', 'screen_interface.kv'))
@@ -48,6 +49,7 @@ class ScreenLayout(Widget):
             self.ids.scanner_label_value.text = f'[b][color=#00ff00]OK[/color][/b]' if is_scanner_online else f'[b][color=#ff0000]FAIL[/color][/b]'
         except Exception as e:
             print("CSFApp:update_data:error:", e)
+            traceback.print_exc()
 
 
 class CSFApp(App):
