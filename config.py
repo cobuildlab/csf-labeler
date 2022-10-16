@@ -1,3 +1,5 @@
+import os.path
+
 import usb.core
 
 # Printer Cups name
@@ -37,7 +39,7 @@ BARCODE_CONFIG = [
 ]
 
 # Label as image folder path.
-img_folder = '/home/cobuild/csf-labeler/images/'
+IMG_FOLDER = '/home/cobuild/csf-labeler/images/'
 
 # Font source path.
 fnt_src = '/home/cobuild/csf-labeler/assets/arial.ttf'
@@ -62,3 +64,5 @@ serial_fnt_size = 18
 # Text Align variables. 
 vertical_padding = 15
 middle = int(label_width_px / 2)
+
+LABEL_PATH = os.path.join(IMG_FOLDER, 'label.png')

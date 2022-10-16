@@ -15,3 +15,4 @@ evdev
 usb
 pycups
 qrcode
+pyclean
