@@ -6,7 +6,7 @@ sudo apt autoremove -y
 sudo apt install -y git supervisor python3
 # Some versions of ubuntu have a dependecy problem for "build-essential" dependencies
 # sudo apt install libc6=2.35-0ubuntu3 libc-bin=2.35-0ubuntu3
-sudo apt install -y build-essential python3-pip python3-dev python3-venv
+sudo apt install -y build-essential python3-pip python3-dev python3-venv libcups2-dev
 sudo apt install -y apt-transport-https python3-lgpio python3-rpi.gpio python3-gpiozero
 sudo apt install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
 sudo apt install -y libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev

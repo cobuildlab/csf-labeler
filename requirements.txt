@@ -16,3 +16,5 @@ usb
 pycups
 qrcode
 pyclean
+pyusb
+RPi.GPIO==0.7.1a4
