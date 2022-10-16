@@ -79,6 +79,7 @@ class CSFApp(App):
 if __name__ == '__main__':
     Config.set('graphics', 'fullscreen', 'auto')
     Config.set('graphics', 'window_state', 'maximized')
+    Config.set('graphics', 'multisamples', '0')
     Config.write()
     Window.fullscreen = "auto"
     Window.maximize()
