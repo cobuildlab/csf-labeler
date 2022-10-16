@@ -4,7 +4,6 @@ from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.clock import Clock
-from kivy.config import Config
 from controller import ButtonsReader
 from scanner import CodeScanner
 from network import check_network_conn
@@ -77,10 +76,5 @@ class CSFApp(App):
 
 
 if __name__ == '__main__':
-    Config.set('graphics', 'fullscreen', 'auto')
-    Config.set('graphics', 'window_state', 'maximized')
-    Config.set('graphics', 'multisamples', '0')
-    Config.write()
     Window.fullscreen = "auto"
-    Window.maximize()
     CSFApp().run()
