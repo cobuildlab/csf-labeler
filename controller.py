@@ -1,21 +1,21 @@
 from evdev import InputDevice, categorize, ecodes
 
 from network import RequestSender
-from printer import send_to_printer
+from printer import Printer
 from label import generate_label
 from threading import Thread
 from math import ceil
 import uuid
 from config import (
     buttons_pad_src,
-    img_folder
+    LABEL_PATH
 )
-import os
 
 
 class ButtonsReader(Thread):
-    def __init__(self, scanner_controller, scale_controller):
+    def __init__(self, scanner_controller, scale_controller, label_path=LABEL_PATH):
         Thread.__init__(self, name="ButtonsReader")
+        self.label_path = label_path
         self.scanner_controller = scanner_controller
         self.scale_controller = scale_controller
         self.day_lot = 1
@@ -35,29 +35,21 @@ class ButtonsReader(Thread):
         self.white_btn = 294
         self.last_label = ''
 
-    def update_last_label(self, label):
-        if self.last_label != '':
-            my_file = img_folder + self.last_label
-            if os.path.isfile(my_file):
-                os.remove(my_file)
-        self.last_label = label
-
     # Start new lot and count
     def start_new_lot(self):
         self.day_lot = self.day_lot + 1
         self.count = 0
 
+    def re_print(self):
+        Printer(self.label_path).start()
+
     def send_print_helper(self, rounded_weight, unique_id):
         print("ButtonsReader:send_print_helper")
         self.count = self.count + 1
         print("ButtonsReader:send_print_helper:unique_id:", unique_id)
-        label_path = generate_label(self.day_lot, self.count, str(rounded_weight), self.scanner_controller.scanned_code,
-                                    unique_id)
-        print("ButtonsReader:send_print_helper:label_path:", label_path)
-        # route = img_folder + label
-        # self.update_last_label(label_path)
-        send_to_printer(label_path)
-        # Printer(label_path).start()
+        generate_label(self.day_lot, self.count, str(rounded_weight), self.scanner_controller.scanned_code,
+                       unique_id)
+        Printer(self.label_path).start()
         print("ButtonsReader:send_print_helper:Printer:sent")
 
     def send_url_request(self, weight_str, unique_id):
@@ -97,10 +89,8 @@ class ButtonsReader(Thread):
                                 print("Let's start a new lot")
                                 self.start_new_lot()
                             if event.code == self.green_btn:
-                                print("Green Btn pressed")
-                                if self.last_label != '':
-                                    route = img_folder + self.last_label
-                                    send_to_printer(route)
+                                print("controller.py:ButtonsReader:run:green_btn")
+                                self.re_print()
                             if event.code == self.white_btn:
                                 self.send_print_helper(str(0.5))
             except Exception as e:

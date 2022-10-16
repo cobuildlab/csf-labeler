@@ -1,3 +1,4 @@
+import os.path
 from evdev import InputDevice, categorize, ecodes
 from config import BARCODE_CONFIG
 from threading import Thread
@@ -25,8 +26,12 @@ KEY_MAPPING = {'KEY_EQUAL': '+', 'KEY_SLASH': '/', 'KEY_SPACE': ' ', 'KEY_DOT': 
 
 def get_scanner_device():
     for barcode_config in BARCODE_CONFIG:
+        scanner_path = barcode_config["src"]
+        path_exists = os.path.exists(scanner_path)
+        if path_exists is False:
+            continue
         try:
-            code_scanner = InputDevice(barcode_config["src"])
+            code_scanner = InputDevice(scanner_path)
         except FileNotFoundError:
             continue
         if code_scanner:

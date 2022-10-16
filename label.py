@@ -2,7 +2,7 @@ from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
 from qrcode import QRCode
 
-from config import (img_folder,
+from config import (IMG_FOLDER,
                     fnt_src,
                     label_width_px,
                     label_length_px,
@@ -10,7 +10,7 @@ from config import (img_folder,
                     normal_fnt_size,
                     serial_fnt_size,
                     vertical_padding,
-                    middle
+                    middle, LABEL_PATH
                     )
 
 # QR and text dynamic positions.
@@ -80,9 +80,4 @@ def generate_label(lot, count, weight_str, barcode, unique_uuid):
     draw.text((middle * 1.5, text_5), barcode[-12:] if barcode else "No Barcode", fill='black', anchor='ms',
               font=serial_fnt)
     draw.text((middle * 1.5, text_6), unique_uuid[-12:], fill='black', anchor='ms', font=serial_fnt)
-
-    label_name = 'label.png'
-    label_path = img_folder + label_name
-    img.save(label_path)
-
-    return label_path
+    img.save(LABEL_PATH)

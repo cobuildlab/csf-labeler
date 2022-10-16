@@ -4,6 +4,7 @@ from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.clock import Clock
+from kivy.config import Config
 from controller import ButtonsReader
 from scanner import CodeScanner
 from network import check_network_conn
@@ -12,9 +13,7 @@ from printer import get_printer_serial, is_printer_ready
 from label import get_date, get_time
 import traceback
 
-Window.fullscreen = "auto"
 Builder.load_file(os.path.join('assets', 'screen_interface.kv'))
-previous_code = None
 
 
 class ScreenLayout(Widget):
@@ -78,4 +77,9 @@ class CSFApp(App):
 
 
 if __name__ == '__main__':
+    Config.set('graphics', 'fullscreen', 'auto')
+    Config.set('graphics', 'window_state', 'maximized')
+    Config.write()
+    Window.fullscreen = "auto"
+    Window.maximize()
     CSFApp().run()
