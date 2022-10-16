@@ -11,6 +11,7 @@ sudo apt install -y apt-transport-https python3-lgpio python3-rpi.gpio python3-g
 sudo apt install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
 sudo apt install -y libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev
 sudo apt install -y libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good
+sudo apt install -y libcairo2 libcairo2-dev
 
 # Kivy
 sudo add-apt-repository ppa:kivy-team/kivy
