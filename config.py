@@ -34,7 +34,10 @@ BARCODE_CONFIG = [
     {
         "src": "/dev/input/by-id/usb-SuperMax_Imaging_2208_CM221A8K0093-event-kbd",
         "device": lambda: usb.code.find(idVendor=0x2dd6, idProduct=0x2141)
-
+    },
+    {
+        "src": "/dev/input/by-id/usb-SuperMax_Imaging_2600M_CM261A4N0068-event-kbd",
+        "device": lambda: usb.code.find(idVendor=0x2dd6, idProduct=0x2141)
     }
 ]
 
