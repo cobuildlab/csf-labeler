@@ -6,7 +6,7 @@ from kivy.lang import Builder
 from kivy.clock import Clock
 from controller import ButtonsReader
 from scanner import CodeScanner
-from network import check_network_conn
+from csf_network import check_network_conn
 from fairbanks_scale import FairbanksScaleReader, check_scale_conn
 from printer import get_printer_serial, is_printer_ready
 from label import get_date, get_time

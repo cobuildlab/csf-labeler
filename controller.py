@@ -1,6 +1,6 @@
 from evdev import InputDevice, categorize, ecodes
 
-from network import RequestSender
+from csf_network import RequestSender
 from printer import Printer
 from label import generate_label
 from threading import Thread

@@ -3,7 +3,7 @@ import unittest
 import uuid
 import requests
 
-from network import check_network_conn, RequestSender
+from csf_network import check_network_conn, RequestSender
 
 
 class NetworkTestCase(unittest.TestCase):
