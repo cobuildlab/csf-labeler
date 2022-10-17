@@ -1,5 +1,6 @@
 from evdev import InputDevice, categorize, ecodes
 
+from csf_db import fetch_count_and_day_lot, save_count_and_day_lot
 from csf_network import RequestSender
 from printer import Printer
 from label import generate_label
@@ -18,8 +19,7 @@ class ButtonsReader(Thread):
         self.label_path = label_path
         self.scanner_controller = scanner_controller
         self.scale_controller = scale_controller
-        self.day_lot = 1
-        self.count = 0
+        self.count, self.day_lot = fetch_count_and_day_lot()
         # creates object 'gamepad' to store the data
         # you can call it whatever you like
         self.buttons_pad = InputDevice(buttons_pad_src)
@@ -39,6 +39,7 @@ class ButtonsReader(Thread):
     def start_new_lot(self):
         self.day_lot = self.day_lot + 1
         self.count = 0
+        save_count_and_day_lot(self.count, self.day_lot)
 
     def re_print(self):
         Printer(self.label_path).start()
@@ -46,6 +47,8 @@ class ButtonsReader(Thread):
     def send_print_helper(self, rounded_weight, unique_id):
         print("ButtonsReader:send_print_helper")
         self.count = self.count + 1
+        save_count_and_day_lot(self.count, self.day_lot)
+
         print("ButtonsReader:send_print_helper:unique_id:", unique_id)
         generate_label(self.day_lot, self.count, str(rounded_weight), self.scanner_controller.scanned_code,
                        unique_id)

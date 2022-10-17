@@ -57,32 +57,33 @@ class CodeScanner(Thread):
                 time.sleep(5)
                 continue
 
-            to_upper_case = False
-            input_code = ""
             print("CodeScanner:run:code_scanner:", self.code_scanner)
             try:
+                to_upper_case = False
+                input_code = ""
                 for event in self.code_scanner.read_loop():
-                    if event.type == ecodes.EV_KEY:
-                        data = categorize(event)
-                        if data.scancode == LEFT_SHIFT:
-                            to_upper_case = True
-                            continue
+                    if event.type != ecodes.EV_KEY:
+                        continue
 
-                        if data.keystate != KEY_UP:
-                            continue
+                    data = categorize(event)
+                    if data.scancode == LEFT_SHIFT:
+                        to_upper_case = True
+                        continue
 
-                        # Each event is 1 character, have to store all events until code 28 which is enter/done.
-                        # Store entire scan in global variable and reset the input.
-                        if data.scancode == KEY_ENTER:
-                            self.scanned_code = input_code
-                            input_code = ""
+                    if data.keystate != KEY_UP:
+                        continue
+
+                    if data.scancode == KEY_ENTER:
+                        self.scanned_code = input_code
+                        input_code = ""
+                        continue
+
+                    if data.keycode in KEY_MAPPING:
+                        if to_upper_case:
+                            input_code += custom_upper(KEY_MAPPING[data.keycode])
+                            to_upper_case = False
                         else:
-                            if data.keycode in KEY_MAPPING:
-                                if to_upper_case:
-                                    input_code += custom_upper(KEY_MAPPING[data.keycode])
-                                    to_upper_case = False
-                                else:
-                                    input_code += KEY_MAPPING[data.keycode]
+                            input_code += KEY_MAPPING[data.keycode]
             except OSError as e:
                 print("CodeScanner:run:Scanner offline:error:", e)
                 self.code_scanner = None
