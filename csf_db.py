@@ -1,8 +1,14 @@
 import sqlite3
-from threading import Thread
 
 connection = None
 is_loaded = False
+
+"""
+Database access module
+Currently implemented using sqlite. SQLITE in python3 has to be used on the same thread always
+Here, we use it by accessing with the controller.py file. This functions initialize the database, 
+read and update the values
+"""
 
 
 def _save_count_and_day_lot(count, day_lot):
