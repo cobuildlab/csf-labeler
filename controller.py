@@ -19,7 +19,7 @@ class ButtonsReader(Thread):
         self.label_path = label_path
         self.scanner_controller = scanner_controller
         self.scale_controller = scale_controller
-        self.count, self.day_lot = fetch_count_and_day_lot()
+        self.count, self.day_lot = 0, 0
         # creates object 'gamepad' to store the data
         # you can call it whatever you like
         self.buttons_pad = InputDevice(buttons_pad_src)
@@ -67,6 +67,7 @@ class ButtonsReader(Thread):
         print("ButtonsReader:send_url_request:sent:")
 
     def run(self):
+        self.count, self.day_lot = fetch_count_and_day_lot()
         while True:
             try:
                 # evdev takes care of polling the controller in a loop
