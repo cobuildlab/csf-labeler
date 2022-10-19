@@ -33,6 +33,7 @@
 
 1. Installing a new Scanner Device:
 - Add a new entry in the variable BARCODE_CONFIG in the `config.py` file. This is python code, so make sure is a valid entry
+- Use the `src` property, leave the `device` as it is in the others
 
 example:
 
