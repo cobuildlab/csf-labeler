@@ -12,3 +12,4 @@ __pycache__/
 log/*.log
 .env
 csf.db
+.DS_Store

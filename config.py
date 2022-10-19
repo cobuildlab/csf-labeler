@@ -40,13 +40,12 @@ BARCODE_CONFIG = [
         "device": lambda: usb.code.find(idVendor=0x2dd6, idProduct=0x2141)
     }
 ]
-
+BASE_DIR = '/home/cobuild/csf-labeler'
 # Label as image folder path.
-IMG_FOLDER = '/home/cobuild/csf-labeler/images/'
+IMG_PATH = BASE_DIR + '/images/'
 
 # Font source path.
-fnt_src = '/home/cobuild/csf-labeler/assets/arial.ttf'
-
+FONT_PATH = BASE_DIR + '/assets/arial.ttf'
 # Label resolution - This should be set in pixels.
 # label_width_px = 457
 # label_length_px = 812
@@ -68,4 +67,4 @@ serial_fnt_size = 18
 vertical_padding = 15
 middle = int(label_width_px / 2)
 
-LABEL_PATH = os.path.join(IMG_FOLDER, 'label.png')
+LABEL_PATH = os.path.join(IMG_PATH, 'label.png')

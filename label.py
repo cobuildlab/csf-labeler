@@ -2,16 +2,16 @@ from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
 from qrcode import QRCode
 
-from config import (IMG_FOLDER,
-                    fnt_src,
-                    label_width_px,
-                    label_length_px,
-                    header_fnt_size,
-                    normal_fnt_size,
-                    serial_fnt_size,
-                    vertical_padding,
-                    middle, LABEL_PATH
-                    )
+from config import (
+    FONT_PATH,
+    label_width_px,
+    label_length_px,
+    header_fnt_size,
+    normal_fnt_size,
+    serial_fnt_size,
+    vertical_padding,
+    middle, LABEL_PATH
+)
 
 # QR and text dynamic positions.
 text_1 = int(vertical_padding - 5 + header_fnt_size)
@@ -25,9 +25,9 @@ text_7 = int(text_3 - vertical_padding - normal_fnt_size)
 draw_2 = int(text_7 - 10 - normal_fnt_size)
 
 # Font types initialization.
-header_fnt = ImageFont.truetype(fnt_src, size=header_fnt_size)
-body_fnt = ImageFont.truetype(fnt_src, size=normal_fnt_size)
-serial_fnt = ImageFont.truetype(fnt_src, size=serial_fnt_size)
+header_fnt = ImageFont.truetype(FONT_PATH, size=header_fnt_size)
+body_fnt = ImageFont.truetype(FONT_PATH, size=normal_fnt_size)
+serial_fnt = ImageFont.truetype(FONT_PATH, size=serial_fnt_size)
 
 
 # Utility functions to get date and time.
@@ -49,7 +49,7 @@ def get_time():
 
 # Main function to generate a label as an image.
 
-def generate_label(lot, count, weight_str, barcode, unique_uuid):
+def generate_label(lot, count, weight_str, barcode, unique_uuid, printer_serial="", label_path=LABEL_PATH):
     day_name = get_day_name()
     day_date = get_date()
     day_time = get_time()
@@ -72,12 +72,15 @@ def generate_label(lot, count, weight_str, barcode, unique_uuid):
     img.paste(qr_bitmap, (50, draw_1))
     # draw.rectangle([((middle * 1.5) - 30, draw_2), ((middle * 1.5) + 30, draw_2 - 60)], fill=None, outline='black', width= 2)
     draw.text((middle * 1.5, text_7), day_name, fill='black', anchor='ms', font=serial_fnt)
-    draw.line((((middle * 1.5) - 15), draw_2, ((middle * 1.5) + 15), (draw_2 - 30)), fill='black', width=3)
-    draw.line((((middle * 1.5) + 15), draw_2, ((middle * 1.5) - 15), (draw_2 - 30)), fill='black', width=3)
+    # draw the X
+    # draw.line((((middle * 1.5) - 15), draw_2, ((middle * 1.5) + 15), (draw_2 - 30)), fill='black', width=3)
+    # draw.line((((middle * 1.5) + 15), draw_2, ((middle * 1.5) - 15), (draw_2 - 30)), fill='black', width=3)
+    # draw the serial
+    draw.text((middle * 1.5, draw_2), printer_serial, fill='black', anchor='ms', font=serial_fnt)
     draw.text((middle * 1.5, text_3), day_date, fill='black', anchor='ms', font=serial_fnt)
     draw.text((middle * 1.5, text_4), day_time, fill='black', anchor='ms', font=serial_fnt)
     draw.text((middle * 1.5, text_2), uniq_id, fill='black', anchor='ms', font=serial_fnt)
     draw.text((middle * 1.5, text_5), barcode[-12:] if barcode else "No Barcode", fill='black', anchor='ms',
               font=serial_fnt)
     draw.text((middle * 1.5, text_6), unique_uuid[-12:], fill='black', anchor='ms', font=serial_fnt)
-    img.save(LABEL_PATH)
+    img.save(label_path)
