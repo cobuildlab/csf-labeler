@@ -29,6 +29,21 @@
 
 5. Reboot, to test that everything is working
 
+## HOW TOs
+
+1. Installing a new Scanner Device:
+- Add a new entry in the variable BARCODE_CONFIG in the `config.py` file. This is python code, so make sure is a valid entry
+
+example:
+
+```python
+
+    ,{
+        "src": "/dev/input/by-id/usb-SuperMax_Imaging_2208CM221A4N1061-event-kbd",
+        "device": lambda: usb.code.find(idVendor=0x2dd6, idProduct=0x2141)
+    }
+```
+
 ## TROUBLESHOOTING
 
 - Screen in NO SIGNAL: There are cases where the power adapter with clicker doesn't provide enough energy to turn 
