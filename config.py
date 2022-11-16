@@ -42,6 +42,22 @@ BARCODE_CONFIG = [
     {
         "src": "/dev/input/by-id/usb-SuperMax_Imaging_2208_CM221A4N1061-event-kbd",
         "device": lambda: usb.code.find(idVendor=0x2dd6, idProduct=0x2141)
+    },
+    {
+        "src": "/dev/input/by-id/usb-SuperLead_2208_SK220426012C8-event-kbd",
+        "device": lambda: usb.code.find(idVendor=0x2dd6, idProduct=0x2141)
+    },
+    {
+        "src": "/dev/input/by-id/usb-SuperLead_2208_SK22042601208-event-kbd",
+        "device": lambda: usb.code.find(idVendor=0x2dd6, idProduct=0x2141)
+    },
+    {
+        "src": "/dev/input/by-id/usb-SuperLead_2208_SK22042601209-event-kbd",
+        "device": lambda: usb.code.find(idVendor=0x2dd6, idProduct=0x2141)
+    },
+    {
+        "src": "/dev/input/by-id/usb-SuperLead_2208_SK22042601191-event-kbd",
+        "device": lambda: usb.code.find(idVendor=0x2dd6, idProduct=0x2141)
     }
 ]
 BASE_DIR = '/home/cobuild/csf-labeler'
