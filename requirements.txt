@@ -8,7 +8,7 @@ click==8.0.3
 click-log==0.4.0
 colorama==0.4.4
 colorzero==2.0
-cryptography==3.4.8
+cryptography==39.0.1
 dataclasses==0.6
 deprecation==2.1.0
 distro==1.7.0
